@@ -46,14 +46,14 @@
       <div class="trace" role="group" aria-labelledby="trace-title">
         <h2 id="trace-title">How one message moves through SEDA (simplified)</h2>
         <ol>
-          <li><span class="step">received</span> <span class="sep">—</span> WhatsApp message from an ad</li>
-          <li><span class="step">merge</span> <span class="sep">—</span> three quick messages into one turn</li>
-          <li class="gate"><span class="step">gate</span> <span class="sep">—</span> staff has not taken over <span class="sep">—</span> <span class="result">pass</span></li>
-          <li class="gate"><span class="step">gate</span> <span class="sep">—</span> channel and page allowed <span class="sep">—</span> <span class="result">pass</span></li>
-          <li><span class="step">context</span> <span class="sep">—</span> matched to the campaign it came from</li>
-          <li class="agent"><span class="step">agent</span> <span class="sep">—</span> check_availability() <span class="sep">—</span> <span class="result">3 slots</span></li>
-          <li class="agent"><span class="step">agent</span> <span class="sep">—</span> create_booking() <span class="sep">—</span> <span class="result">confirmed</span></li>
-          <li class="reply"><span class="step">reply</span> <span class="sep">—</span> sent to the person<span class="foot">Median reply time in the pilot: about 20 seconds</span></li>
+          <li><span class="step">received</span><span class="desc">WhatsApp message from an ad</span></li>
+          <li><span class="step">merge</span><span class="desc">three quick messages into one turn</span></li>
+          <li class="gate"><span class="step">gate</span><span class="desc">staff has not taken over <span class="result">pass</span></span></li>
+          <li class="gate"><span class="step">gate</span><span class="desc">channel and page allowed <span class="result">pass</span></span></li>
+          <li><span class="step">context</span><span class="desc">matched to the campaign it came from</span></li>
+          <li class="agent"><span class="step">agent</span><span class="desc">check_availability() <span class="result">3 slots</span></span></li>
+          <li class="agent"><span class="step">agent</span><span class="desc">create_booking() <span class="result">confirmed</span></span></li>
+          <li class="reply"><span class="step">reply</span><span class="desc">sent to the person<span class="foot">Median reply time in the pilot: about 20 seconds</span></span></li>
         </ol>
       </div>
     </div>

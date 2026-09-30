@@ -181,26 +181,31 @@ main { display: block; }
   list-style: none;
   margin: 0;
   padding: 0;
-  position: relative;
-}
-.trace ol::before {
-  content: "";
-  position: absolute;
-  left: 5px;
-  top: 0.55em;
-  bottom: 0.9em;
-  width: 1px;
-  background: var(--line);
 }
 .trace li {
   position: relative;
+  display: grid;
+  grid-template-columns: 9ch minmax(0, 1fr);
+  column-gap: 0.6rem;
   padding: 0 0 0.75rem 1.6rem;
   animation: trace-in 0.4s ease-out both;
 }
 .trace li:last-child { padding-bottom: 0; }
+/* Line segment from this dot down to the next one */
+.trace li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: calc(0.42em + 5px);
+  bottom: calc(-0.42em - 5px);
+  width: 1.5px;
+  background: var(--muted);
+  opacity: 0.55;
+}
 .trace li::before {
   content: "";
   position: absolute;
+  z-index: 1;
   left: 1px;
   top: 0.42em;
   width: 9px;
@@ -209,15 +214,16 @@ main { display: block; }
   background: var(--surface);
   border: 1.5px solid var(--muted);
 }
-.trace .step { font-weight: 700; }
-.trace .sep { color: var(--muted); }
-.trace .gate .step, .trace .gate .result { color: var(--gate); }
+.trace .step { color: var(--muted); }
+.trace .desc { min-width: 0; }
+.trace .result { margin-left: 0.5ch; }
+.trace .gate .result { color: var(--gate); }
 .trace .gate::before {
   border-radius: 1px;
   background: var(--gate);
   border-color: var(--gate);
 }
-.trace .agent .step, .trace .agent .result { color: var(--accent); }
+.trace .agent .result { color: var(--accent); }
 .trace .agent::before { background: var(--accent); border-color: var(--accent); }
 .trace .reply::before { background: var(--text); border-color: var(--text); }
 .trace .foot { display: block; color: var(--muted); margin-top: 0.2rem; }
@@ -353,6 +359,12 @@ figcaption { margin-top: 0.8rem; color: var(--muted); font-size: 0.92rem; max-wi
 .svg-head-accent { fill: var(--accent); }
 .svg-label { fill: var(--muted); font: 600 11.5px var(--sans); }
 .svg-label-accent { fill: var(--accent); font: 600 11.5px var(--sans); }
+/* Desktop diagram renders at roughly 1:1 at 1280px, so these are the on-screen sizes */
+.diagram-wide .svg-title { font-size: 16px; }
+.diagram-wide .svg-text { font-size: 14px; }
+.diagram-wide .svg-gate-title { font-size: 14.5px; }
+.diagram-wide .svg-gate-text { font-size: 14px; }
+.diagram-wide .svg-label, .diagram-wide .svg-label-accent { font-size: 13.5px; }
 
 .callout {
   border-left: 4px solid var(--gate);
@@ -407,6 +419,7 @@ figcaption { margin-top: 0.8rem; color: var(--muted); font-size: 0.92rem; max-wi
   .wrap { padding: 0 16px; }
   body { font-size: 16px; }
   .trace { font-size: 0.78rem; padding: 1.1rem 1rem 1rem; }
+  .trace li { grid-template-columns: 8.5ch minmax(0, 1fr); column-gap: 0.4rem; padding-left: 1.4rem; }
   .figures dd { font-size: 1.15rem; }
   .results td { font-size: 1rem; }
 }
