@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SEDA case study: an AI receptionist that knows when to stay quiet | Sahin Tekten</title>
-<meta name="description" content="SEDA answers clinic enquiries on WhatsApp, Instagram and Messenger, qualifies each person and books a free consultation.">
+<meta name="description" content="SEDA answers clinic enquiries on WhatsApp, Instagram and Messenger and books consultations.">
 <meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#F5F1EA" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#161512" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#FAFAF9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0D0F0E" media="(prefers-color-scheme: dark)">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -22,8 +22,7 @@
     <nav class="site-nav" aria-label="Main">
       <ul>
         <li><a href="/ai-receptionist.html" aria-current="page">Case study</a></li>
-        <li><a href="/#work">Other work</a></li>
-        <li><a href="/#experience">Experience</a></li>
+        <li><a href="/#about">About</a></li>
         <li><a href="/#contact">Contact</a></li>
       </ul>
     </nav>
@@ -34,435 +33,395 @@
 
   <section class="case-hero" aria-labelledby="case-title">
     <div class="wrap">
-      <a class="back" href="/">Back to home</a>
-      <h1 id="case-title">An AI receptionist that knows when to stay quiet</h1>
-      <p class="lede">SEDA answers clinic enquiries on WhatsApp, Instagram and Messenger, qualifies each person and books a free consultation. It has been piloted with a cosmetic surgery clinic in Istanbul since July 2026. This page explains how it works, the problems we hit in production and what the numbers say. It also includes a phone agent that I built and tested end to end, which isn't in production yet.</p>
-      <div class="actions">
-        <a class="btn btn-primary" href="https://github.com/sahintekten/seda-chat-router">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 7-5 5 5 5M16 7l5 5-5 5"/></svg>
-          View the code
-        </a>
-        <a class="btn" href="#results">Results from the pilot</a>
-      </div>
+      <h1 id="case-title">SEDA: an AI receptionist that knows when to stay quiet</h1>
       <dl class="summary">
-        <div><dt>My role</dt><dd>Co-founder, product lead</dd></div>
-        <div><dt>Team</dt><dd>Two co-founders</dd></div>
-        <div><dt>Timeline</dt><dd>Jan 2026 to present</dd></div>
-        <div><dt>Live pilot</dt><dd>Since July 2026</dd></div>
+        <div><dt>What</dt><dd>Answers clinic enquiries on WhatsApp, Instagram and Messenger and books consultations. Pilot with a cosmetic surgery clinic in Istanbul since July 2026.</dd></div>
+        <div><dt>My role</dt><dd>Co-founder. Agent behaviour, backend, tests, integrations, the pilot itself.</dd></div>
+        <div><dt>Stack</dt><dd>FastAPI, PostgreSQL, Docker, Retell AI, GoHighLevel, Meta APIs</dd></div>
+        <div><dt>Results</dt><dd>~300 agent runs a day, ~20 s median reply, 99.2% price accuracy, 267 tests</dd></div>
       </dl>
+      <div class="actions">
+        <a class="btn btn-primary" href="https://github.com/sahintekten/seda-chat-router"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 7-5 5 5 5M16 7l5 5-5 5"/></svg>View the code</a>
+        <a class="btn" href="#results">Jump to results</a>
+      </div>
     </div>
   </section>
 
-  <div class="wrap case-layout">
-    <nav class="toc" aria-labelledby="toc-title">
-      <h2 id="toc-title">On this page</h2>
-      <ol>
-        <li><a href="#problem">The problem</a></li>
-<li><a href="#flow">How a message is handled</a></li>
-<li><a href="#silence">Deciding when to stay silent</a></li>
-<li><a href="#production">Problems solved in production</a></li>
-<li><a href="#decisions">Decisions that shaped it</a></li>
-<li><a href="#results">Results from the pilot</a></li>
-<li><a href="#phone">The phone agent</a></li>
-<li><a href="#role">My role</a></li>
-<li><a href="#next">What's next</a></li>
-      </ol>
-    </nav>
-
-    <div class="case-content">
-      <details class="toc-mobile">
-        <summary>On this page</summary>
-        <ol>
-          <li><a href="#problem">The problem</a></li>
-<li><a href="#flow">How a message is handled</a></li>
-<li><a href="#silence">Deciding when to stay silent</a></li>
-<li><a href="#production">Problems solved in production</a></li>
-<li><a href="#decisions">Decisions that shaped it</a></li>
-<li><a href="#results">Results from the pilot</a></li>
-<li><a href="#phone">The phone agent</a></li>
-<li><a href="#role">My role</a></li>
-<li><a href="#next">What's next</a></li>
-        </ol>
-      </details>
-
-      <section class="chapter" id="problem" aria-labelledby="problem-title">
-        <h2 id="problem-title">The problem</h2>
-        <p>Clinics in Turkey's health tourism sector advertise heavily on Instagram and Facebook. Every ad brings a wave of messages, and staff can't always answer them quickly. Slow replies cost clinics enquiries they have already paid for.</p>
-        <p>An AI that simply answers everything isn't the solution either. It has to quote the right prices, book real appointments, and above all know when not to talk: when a staff member has taken over, when a message arrives on a channel it shouldn't handle, or when it isn't sure.</p>
-      </section>
-
-      <section class="chapter" id="flow" aria-labelledby="flow-title">
-        <h2 id="flow-title">How a message is handled</h2>
-        <ol class="steps">
-          <li><span class="num" aria-hidden="true">1</span><p>A person messages the clinic on WhatsApp, Instagram or Messenger. Meta delivers it to GoHighLevel, which the clinic uses as its CRM, inbox and calendar.</p></li>
-          <li><span class="num" aria-hidden="true">2</span><p>GoHighLevel forwards it to our FastAPI backend through a single signed webhook, so every message enters the system the same way.</p></li>
-          <li><span class="num" aria-hidden="true">3</span><p>The router merges quick bursts of messages into one turn and drops duplicates.</p></li>
-          <li class="gate-step"><span class="num" aria-hidden="true">4</span><p>Gates decide whether the agent may answer at all: has a staff member taken over, is this channel and page enabled for the bot? If anything is unclear, it stays silent.</p></li>
-          <li><span class="num" aria-hidden="true">5</span><p>The router adds context, including which ad the person came from, using a map of about 80 campaign links.</p></li>
-          <li><span class="num" aria-hidden="true">6</span><p>The conversation goes to the agent on Retell AI, which runs on a Claude model with the clinic's knowledge base in its prompt. Sessions are pinned to a prompt version so a conversation doesn't change behaviour midway.</p></li>
-          <li><span class="num" aria-hidden="true">7</span><p>The agent calls tools: check availability, book or cancel an appointment, take a note, send sample photos, look up earlier records.</p></li>
-          <li><span class="num" aria-hidden="true">8</span><p>The reply goes back through GoHighLevel. Bookings land in the clinic's calendar and sync to Google Calendar, and the clinic owner gets a notification for each type of event.</p></li>
-        </ol>
-        <figure>
-          <div class="diagram">
-            <svg class="diagram-wide" viewBox="0 0 1000 440" role="img" aria-labelledby="arch-title arch-desc">
-            <title id="arch-title">Architecture of the live system</title>
-            <desc id="arch-desc">Messages flow from the channels (WhatsApp, Instagram, Messenger) to GoHighLevel, then over a signed webhook to the FastAPI router. The router merges bursts, drops duplicates and runs fail-closed gates for staff takeover, channel and page, then adds ad campaign context and session versioning. It passes the conversation to the Retell AI agent, which uses a Claude model with the knowledge base in the prompt and calls tools for availability, booking and cancelling, notes, sample photos and record lookups. The reply goes back to GoHighLevel. GoHighLevel syncs two ways with Google Calendar, and the router stores sessions, logs and state in PostgreSQL.</desc>
-            <defs>
-              <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="svg-head" d="M0,0 L10,5 L0,10 z"/></marker>
-              <marker id="ah-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="svg-head-accent" d="M0,0 L10,5 L0,10 z"/></marker>
-            </defs>
-
-            <rect class="svg-box" x="10" y="40" width="120" height="120" rx="6"/>
-            <text class="svg-title" x="24" y="68">Channels</text>
-            <text class="svg-text" x="24" y="92">WhatsApp</text>
-            <text class="svg-text" x="24" y="114">Instagram</text>
-            <text class="svg-text" x="24" y="136">Messenger</text>
-
-            <rect class="svg-box" x="170" y="40" width="160" height="120" rx="6"/>
-            <text class="svg-title" x="184" y="68">GoHighLevel</text>
-            <text class="svg-text" x="184" y="92">CRM and inbox</text>
-            <text class="svg-text" x="184" y="114">Calendar</text>
-            <text class="svg-text" x="184" y="136">WhatsApp Business</text>
-
-            <rect class="svg-box-accent" x="380" y="20" width="250" height="212" rx="6"/>
-            <text class="svg-title" x="395" y="48">FastAPI router</text>
-            <text class="svg-text" x="395" y="72">Merge bursts, drop duplicates</text>
-            <rect class="svg-box-gate" x="395" y="88" width="220" height="66" rx="4"/>
-            <text class="svg-gate-title" x="408" y="113">Gates (fail-closed)</text>
-            <text class="svg-gate-text" x="408" y="139">Staff takeover, channel, page</text>
-            <text class="svg-text" x="395" y="186">Ad campaign context</text>
-            <text class="svg-text" x="395" y="210">Session versioning</text>
-
-            <rect class="svg-box-accent" x="670" y="40" width="150" height="120" rx="6"/>
-            <text class="svg-title" x="684" y="68">Retell AI agent</text>
-            <text class="svg-text" x="684" y="92">Claude model</text>
-            <text class="svg-text" x="684" y="114">Knowledge base</text>
-            <text class="svg-text" x="684" y="136">in the prompt</text>
-
-            <rect class="svg-box" x="860" y="20" width="130" height="164" rx="6"/>
-            <text class="svg-title" x="874" y="48">Tools</text>
-            <text class="svg-text" x="874" y="72">Availability</text>
-            <text class="svg-text" x="874" y="94">Book, cancel</text>
-            <text class="svg-text" x="874" y="116">Take a note</text>
-            <text class="svg-text" x="874" y="138">Sample photos</text>
-            <text class="svg-text" x="874" y="160">Look up records</text>
-
-            <line class="svg-arrow" x1="130" y1="100" x2="168" y2="100" marker-end="url(#ah)"/>
-            <line class="svg-arrow" x1="330" y1="100" x2="378" y2="100" marker-end="url(#ah)"/>
-            <text class="svg-label" x="354" y="90" text-anchor="middle">signed</text>
-            <line class="svg-arrow" x1="630" y1="100" x2="668" y2="100" marker-end="url(#ah)"/>
-            <line class="svg-arrow" x1="820" y1="100" x2="858" y2="100" marker-end="url(#ah)"/>
-
-            <rect class="svg-box" x="150" y="320" width="150" height="72" rx="6"/>
-            <text class="svg-title" x="164" y="348">Google Calendar</text>
-            <text class="svg-text" x="164" y="374">Two-way sync</text>
-            <line class="svg-arrow" x1="225" y1="162" x2="225" y2="318" marker-start="url(#ah)" marker-end="url(#ah)"/>
-
-            <rect class="svg-box" x="415" y="320" width="180" height="72" rx="6"/>
-            <text class="svg-title" x="429" y="348">PostgreSQL</text>
-            <text class="svg-text" x="429" y="374">Sessions, logs, state</text>
-            <line class="svg-arrow" x1="505" y1="232" x2="505" y2="318" marker-end="url(#ah)"/>
-
-            <path class="svg-reply" d="M745,160 V424 H316 V162" marker-end="url(#ah-accent)"/>
-            <text class="svg-label-accent" x="640" y="415">reply</text>
-          </svg>
-            <svg class="diagram-tall" viewBox="0 0 360 730" role="img" aria-labelledby="arch-title-m arch-desc-m">
-            <title id="arch-title-m">Architecture of the live system</title>
-            <desc id="arch-desc-m">Messages flow from the channels (WhatsApp, Instagram, Messenger) to GoHighLevel, then over a signed webhook to the FastAPI router. The router merges bursts, drops duplicates and runs fail-closed gates for staff takeover, channel and page, then adds ad campaign context and session versioning. It passes the conversation to the Retell AI agent, which uses a Claude model with the knowledge base in the prompt and calls tools for availability, booking and cancelling, notes, sample photos and record lookups. The reply goes back to GoHighLevel. GoHighLevel syncs two ways with Google Calendar, and the router stores sessions, logs and state in PostgreSQL.</desc>
-            <defs>
-              <marker id="ahm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="svg-head" d="M0,0 L10,5 L0,10 z"/></marker>
-              <marker id="ahm-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="svg-head-accent" d="M0,0 L10,5 L0,10 z"/></marker>
-            </defs>
-
-            <rect class="svg-box" x="36" y="10" width="190" height="90" rx="6"/>
-            <text class="svg-title" x="50" y="34">Channels</text>
-            <text class="svg-text" x="50" y="54">WhatsApp</text>
-            <text class="svg-text" x="50" y="71">Instagram</text>
-            <text class="svg-text" x="50" y="88">Messenger</text>
-            <line class="svg-arrow" x1="131" y1="100" x2="131" y2="128" marker-end="url(#ahm)"/>
-
-            <rect class="svg-box" x="36" y="130" width="190" height="90" rx="6"/>
-            <text class="svg-title" x="50" y="154">GoHighLevel</text>
-            <text class="svg-text" x="50" y="174">CRM and inbox</text>
-            <text class="svg-text" x="50" y="191">Calendar</text>
-            <text class="svg-text" x="50" y="208">WhatsApp Business</text>
-
-            <rect class="svg-box" x="260" y="140" width="95" height="70" rx="6"/>
-            <text class="svg-title" x="268" y="160">Google</text>
-            <text class="svg-title" x="268" y="177">Calendar</text>
-            <text class="svg-text" x="268" y="198">Two-way sync</text>
-            <line class="svg-arrow" x1="228" y1="175" x2="258" y2="175" marker-start="url(#ahm)" marker-end="url(#ahm)"/>
-
-            <line class="svg-arrow" x1="131" y1="220" x2="131" y2="258" marker-end="url(#ahm)"/>
-            <text class="svg-label" x="141" y="244">signed</text>
-
-            <rect class="svg-box-accent" x="36" y="260" width="190" height="200" rx="6"/>
-            <text class="svg-title" x="50" y="284">FastAPI router</text>
-            <text class="svg-text" x="50" y="304">Merge bursts,</text>
-            <text class="svg-text" x="50" y="320">drop duplicates</text>
-            <rect class="svg-box-gate" x="50" y="334" width="162" height="66" rx="4"/>
-            <text class="svg-gate-title" x="60" y="354">Gates (fail-closed)</text>
-            <text class="svg-gate-text" x="60" y="373">Staff takeover,</text>
-            <text class="svg-gate-text" x="60" y="389">channel, page</text>
-            <text class="svg-text" x="50" y="424">Ad campaign context</text>
-            <text class="svg-text" x="50" y="442">Session versioning</text>
-
-            <rect class="svg-box" x="260" y="300" width="95" height="76" rx="6"/>
-            <text class="svg-title" x="268" y="320">PostgreSQL</text>
-            <text class="svg-text" x="268" y="342">Sessions, logs,</text>
-            <text class="svg-text" x="268" y="358">state</text>
-            <line class="svg-arrow" x1="228" y1="338" x2="258" y2="338" marker-end="url(#ahm)"/>
-
-            <line class="svg-arrow" x1="131" y1="460" x2="131" y2="488" marker-end="url(#ahm)"/>
-
-            <rect class="svg-box-accent" x="36" y="490" width="190" height="72" rx="6"/>
-            <text class="svg-title" x="50" y="514">Retell AI agent</text>
-            <text class="svg-text" x="50" y="534">Claude model</text>
-            <text class="svg-text" x="50" y="551">Knowledge base in the prompt</text>
-
-            <line class="svg-arrow" x1="131" y1="562" x2="131" y2="590" marker-end="url(#ahm)"/>
-
-            <rect class="svg-box" x="36" y="592" width="190" height="128" rx="6"/>
-            <text class="svg-title" x="50" y="616">Tools</text>
-            <text class="svg-text" x="50" y="636">Availability</text>
-            <text class="svg-text" x="50" y="653">Book, cancel</text>
-            <text class="svg-text" x="50" y="670">Take a note</text>
-            <text class="svg-text" x="50" y="687">Sample photos</text>
-            <text class="svg-text" x="50" y="704">Look up records</text>
-
-            <path class="svg-reply" d="M36,526 H18 V175 H34" marker-end="url(#ahm-accent)"/>
-            <text class="svg-label-accent" transform="translate(12 350) rotate(-90)" text-anchor="middle">reply</text>
-          </svg>
-          </div>
-          <figcaption>Architecture of the live system. The gates (amber) run before the agent ever sees a message.</figcaption>
-        </figure>
-      </section>
-
-      <section class="chapter" id="silence" aria-labelledby="silence-title">
-        <h2 id="silence-title">Deciding when to stay silent</h2>
-        <p>The most important design decision was to enforce the agent's boundaries in code, not only in its prompt. A prompt can be misread; a gate can't. Before the agent sees a message, the router checks whether a staff member has taken over the conversation, and whether this channel and page are enabled for the bot. If any check fails or anything is unclear, the system stays silent. We call this failing closed.</p>
-        <p>A few operating rules back this up. A dry-run switch lets us test changes without sending anything. We never simulate conversations against the live clinic. And we treat "published" and "live" as different things: after every prompt release we check the version that is actually being served.</p>
-        <div class="callout">
-          <p><span class="big">10 out of 10</span>We test the gates by breaking them. A mutation check script removes each of the 10 safety gates in turn, and the test suite has to fail every time; it does, 10 out of 10. If the tests still pass without a gate, the tests aren't good enough. Separately, there are 267 automated tests.</p>
-        </div>
-      </section>
-
-      <section class="chapter" id="production" aria-labelledby="production-title">
-        <h2 id="production-title">Three problems we solved in production</h2>
-        <div class="pairs">
-          <div>
-            <h3>Old conversations, old prices</h3>
-            <p>Because sessions are pinned to a prompt version, conversations that started before a pricing update kept quoting the old prices and links. We built a session-retirement mechanism with two criteria and retired 2,051 sessions in one go. Each new session starts with a summary of the old one, so nobody had to repeat themselves.</p>
-          </div>
-          <div>
-            <h3>A WhatsApp template that kept breaking</h3>
-            <p>A time variable in a WhatsApp message template kept going out wrong. Our fixes didn't help, because Meta's template approval window meant the old version kept being sent. We removed the time variable from the template body altogether, and the next 32 of 32 messages went out correctly.</p>
-          </div>
-          <div>
-            <h3>A map card with outdated details</h3>
-            <p>When the agent shared the clinic's location, the map preview showed the doctor's old title and photo. We switched to coordinate-based links, added a filter that cleans links before a message is sent, and retired the affected sessions.</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="chapter" id="decisions" aria-labelledby="decisions-title">
-        <h2 id="decisions-title">Three decisions that shaped the system</h2>
-        <div class="pairs">
-          <div>
-            <h3>Our own backend instead of a no-code tool</h3>
-            <p>We started on Make, but the scenarios were fragile and impossible to test properly. Moving to our own FastAPI backend, with one signed entry point, gave us tests, version control and full control over behaviour.</p>
-          </div>
-          <div>
-            <h3>One system for CRM, inbox and calendar</h3>
-            <p>We had built our own CRM panel, but retired it in favour of GoHighLevel. It gives clinics the WhatsApp Business line, the inbox and the calendar in one white-labelled place, which is what they actually use day to day.</p>
-          </div>
-          <div>
-            <h3>Behaviour guaranteed by code</h3>
-            <p>Staff takeover, channel and page rules live in the router as gates, so when the bot stays silent is a guarantee rather than a hope. The prompt handles how it speaks; the code handles whether it speaks.</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="chapter" id="results" aria-labelledby="results-title">
-        <h2 id="results-title">Results from the pilot</h2>
-        <p>All figures are measured in the live pilot. On a normal day SEDA handles around 300 agent runs for 100 to 160 different people. Here is one sample week, 1 to 7 September 2026:</p>
-        <table class="results">
-          <caption class="visually-hidden">Sample week, 1 to 7 September 2026</caption>
-          <tbody>
-            <tr><th scope="row">People who messaged the clinic</th><td>534</td></tr>
-            <tr><th scope="row">Messages received</th><td>3,133</td></tr>
-            <tr><th scope="row">Replies sent by the agent</th><td>1,210</td></tr>
-            <tr><th scope="row">Median reply time (90th percentile)</th><td>~20 s (~24 s)</td></tr>
-            <tr><th scope="row">Accuracy on price answers, in audits</th><td>99.2%</td></tr>
-            <tr><th scope="row">Conversations matched to the ad they came from</th><td>76%</td></tr>
-            <tr><th scope="row">Consultations booked by the agent in a six-day window, each checked against the calendar</th><td>13</td></tr>
-          </tbody>
-        </table>
-      </section>
-
-      <section class="chapter" id="phone" aria-labelledby="phone-title">
-        <h2 id="phone-title">The phone agent</h2>
-        <p>Alongside messaging, I built SEDA's phone agent. It answers incoming calls in Turkish, gives clinic information, checks availability, books and cancels appointments, takes messages and passes urgent cases to the clinic. It has been validated end to end with real test calls, but it isn't in production yet: the clinic's main line hasn't been routed to it, and we prioritised messaging for the pilot.</p>
-
-        <h3>How a call is handled</h3>
-        <ol class="steps">
-          <li><span class="num" aria-hidden="true">1</span><p>A call comes in over a SIP phone line (Verimor in Turkey, Telnyx in Ireland) to an agent built with Retell's Conversation Flow.</p></li>
-          <li><span class="num" aria-hidden="true">2</span><p>The agent works through a graph of nodes, so each stage of the call, from greeting to booking, cancelling or an urgent case, has explicit rules. Clinic information comes from a knowledge base, which deliberately contains no prices.</p></li>
-          <li><span class="num" aria-hidden="true">3</span><p>Each tool call goes to a webhook in Make, which identifies the clinic from the agent's ID and runs the calendar or CRM action.</p></li>
-          <li><span class="num" aria-hidden="true">4</span><p>The result goes back to the agent, which only confirms an action once the tool reports success.</p></li>
-          <li><span class="num" aria-hidden="true">5</span><p>After the call, an analysis step records the outcome and notifies the clinic.</p></li>
-        </ol>
-        <figure>
-          <div class="diagram">
-            <svg class="diagram-wide" viewBox="0 0 1000 340" role="img" aria-labelledby="phone-arch-title phone-arch-desc">
-            <title id="phone-arch-title">The phone agent's architecture</title>
-            <desc id="phone-arch-desc">A call comes in over a SIP phone line (Verimor in Turkey, Telnyx in Ireland) to the Retell agent, built with Conversation Flow and a knowledge base that contains no prices. Each action goes to Make webhooks, which route by agent ID and reject requests without a clinic ID, then run the calendar and CRM action. The result goes back to the agent. After the call, a post-call analysis step leads to a clinic notification.</desc>
-            <defs>
-              <marker id="pah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="svg-head" d="M0,0 L10,5 L0,10 z"/></marker>
-              <marker id="pah-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="svg-head-accent" d="M0,0 L10,5 L0,10 z"/></marker>
-            </defs>
-
-            <rect class="svg-box" x="10" y="50" width="150" height="100" rx="6"/>
-            <text class="svg-title" x="24" y="78">SIP line</text>
-            <text class="svg-text" x="24" y="102">Verimor TR</text>
-            <text class="svg-text" x="24" y="124">Telnyx IE</text>
-
-            <rect class="svg-box-accent" x="210" y="40" width="180" height="120" rx="6"/>
-            <text class="svg-title" x="224" y="68">Retell agent</text>
-            <text class="svg-text" x="224" y="92">Conversation Flow</text>
-            <text class="svg-text" x="224" y="114">Knowledge base,</text>
-            <text class="svg-text" x="224" y="136">no prices</text>
-
-            <rect class="svg-box" x="440" y="20" width="250" height="160" rx="6"/>
-            <text class="svg-title" x="455" y="48">Make webhooks</text>
-            <rect class="svg-box-gate" x="455" y="64" width="220" height="98" rx="4"/>
-            <text class="svg-gate-text" x="468" y="90">Route by agent ID</text>
-            <text class="svg-gate-text" x="468" y="118">Reject requests without</text>
-            <text class="svg-gate-text" x="468" y="140">a clinic ID</text>
-
-            <rect class="svg-box" x="740" y="65" width="180" height="70" rx="6"/>
-            <text class="svg-title" x="756" y="106">Calendar and CRM</text>
-
-            <line class="svg-arrow" x1="160" y1="100" x2="208" y2="100" marker-end="url(#pah)"/>
-            <line class="svg-arrow" x1="390" y1="100" x2="438" y2="100" marker-end="url(#pah)"/>
-            <line class="svg-arrow" x1="690" y1="100" x2="738" y2="100" marker-end="url(#pah)"/>
-
-            <path class="svg-reply" d="M600,180 V222 H340 V162" marker-end="url(#pah-accent)"/>
-            <text class="svg-label-accent" x="470" y="214" text-anchor="middle">result</text>
-
-            <line class="svg-arrow" x1="270" y1="160" x2="270" y2="258" marker-end="url(#pah)"/>
-            <rect class="svg-box" x="190" y="260" width="200" height="60" rx="6"/>
-            <text class="svg-title" x="206" y="296">Post-call analysis</text>
-            <line class="svg-arrow" x1="390" y1="290" x2="438" y2="290" marker-end="url(#pah)"/>
-            <rect class="svg-box" x="440" y="260" width="200" height="60" rx="6"/>
-            <text class="svg-title" x="456" y="296">Clinic notification</text>
-          </svg>
-            <svg class="diagram-tall" viewBox="0 0 360 450" role="img" aria-labelledby="phone-arch-title-m phone-arch-desc-m">
-            <title id="phone-arch-title-m">The phone agent's architecture</title>
-            <desc id="phone-arch-desc-m">A call comes in over a SIP phone line (Verimor in Turkey, Telnyx in Ireland) to the Retell agent, built with Conversation Flow and a knowledge base that contains no prices. Each action goes to Make webhooks, which route by agent ID and reject requests without a clinic ID, then run the calendar and CRM action. The result goes back to the agent. After the call, a post-call analysis step leads to a clinic notification.</desc>
-            <defs>
-              <marker id="pahm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="svg-head" d="M0,0 L10,5 L0,10 z"/></marker>
-              <marker id="pahm-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="svg-head-accent" d="M0,0 L10,5 L0,10 z"/></marker>
-            </defs>
-
-            <rect class="svg-box" x="36" y="10" width="190" height="80" rx="6"/>
-            <text class="svg-title" x="50" y="34">SIP line</text>
-            <text class="svg-text" x="50" y="54">Verimor TR</text>
-            <text class="svg-text" x="50" y="71">Telnyx IE</text>
-            <line class="svg-arrow" x1="131" y1="90" x2="131" y2="118" marker-end="url(#pahm)"/>
-
-            <rect class="svg-box-accent" x="36" y="120" width="190" height="92" rx="6"/>
-            <text class="svg-title" x="50" y="144">Retell agent</text>
-            <text class="svg-text" x="50" y="164">Conversation Flow</text>
-            <text class="svg-text" x="50" y="181">Knowledge base,</text>
-            <text class="svg-text" x="50" y="198">no prices</text>
-
-            <line class="svg-arrow" x1="226" y1="166" x2="246" y2="166" marker-end="url(#pahm)"/>
-            <rect class="svg-box" x="248" y="138" width="108" height="56" rx="6"/>
-            <text class="svg-title" x="258" y="160">Post-call</text>
-            <text class="svg-title" x="258" y="178">analysis</text>
-            <line class="svg-arrow" x1="302" y1="194" x2="302" y2="246" marker-end="url(#pahm)"/>
-            <rect class="svg-box" x="248" y="248" width="108" height="56" rx="6"/>
-            <text class="svg-title" x="258" y="270">Clinic</text>
-            <text class="svg-title" x="258" y="288">notification</text>
-
-            <line class="svg-arrow" x1="131" y1="212" x2="131" y2="240" marker-end="url(#pahm)"/>
-            <rect class="svg-box" x="36" y="242" width="190" height="124" rx="6"/>
-            <text class="svg-title" x="50" y="266">Make webhooks</text>
-            <rect class="svg-box-gate" x="50" y="280" width="162" height="72" rx="4"/>
-            <text class="svg-gate-text" x="60" y="300">Route by agent ID</text>
-            <text class="svg-gate-text" x="60" y="320">Reject requests</text>
-            <text class="svg-gate-text" x="60" y="337">without a clinic ID</text>
-
-            <line class="svg-arrow" x1="131" y1="366" x2="131" y2="394" marker-end="url(#pahm)"/>
-            <rect class="svg-box" x="36" y="396" width="190" height="46" rx="6"/>
-            <text class="svg-title" x="50" y="424">Calendar and CRM</text>
-
-            <path class="svg-reply" d="M36,320 H18 V180 H34" marker-end="url(#pahm-accent)"/>
-            <text class="svg-label-accent" transform="translate(12 250) rotate(-90)" text-anchor="middle">result</text>
-          </svg>
-          </div>
-          <figcaption>The phone agent's architecture. Every action goes through Make, which knows which clinic the call belongs to.</figcaption>
-        </figure>
-
-        <h3>Safeguards</h3>
-        <p>Cancelling an appointment requires looking up the booking first, and ownership is checked against the caller's number. Requests that arrive without a clinic ID are rejected; we added this after one such request broke routing during testing. The agent never tells a caller that something is booked or cancelled until the tool confirms it.</p>
-
-        <h3>Three problems I solved</h3>
-        <div class="pairs">
-          <div>
-            <h4>A migration that was only half done</h4>
-            <p>Moving the data layer touched three places at once: the Make configuration, the database and the slot ID type in the flow. They fell out of sync, and a real test booking failed with a 409 conflict. I wrote a three-layer migration checklist and made slot IDs opaque strings everywhere.</p>
-          </div>
-          <div>
-            <h4>Two formats for one phone number</h4>
-            <p>Cancellations failed the ownership check because one system stored numbers starting with 0 and another with +90. Normalising both to the last ten digits fixed it, which a test call confirmed.</p>
-          </div>
-          <div>
-            <h4>A conversation with no way out</h4>
-            <p>One agent tried to book without checking availability first, and the flow got stuck. I added a recovery path for failed bookings and a loop guard, and it then passed 4 of 4 simulations.</p>
-          </div>
-        </div>
-
-        <h3>How I tested it</h3>
-        <p>Real test calls end to end: information, availability and booking on 4 July 2026, and cancellation on 6 July. On top of that, an 11-scenario notification matrix, a 9-scenario simulation set in Turkish, and a daily reconciliation check in Make. We don't have production call metrics yet because the agent hasn't taken real calls.</p>
-        <p>To show the system in English, I also set up a fictional Dublin clinic as a demo on an Irish phone line.</p>
-        <p class="note">Retell AI (Conversation Flow), Make, Verimor and Telnyx SIP lines, GoHighLevel calendar, WhatsApp notifications.</p>
-      </section>
-
-      <section class="chapter" id="role" aria-labelledby="role-title">
-        <h2 id="role-title">My role</h2>
-        <p>I'm the product owner. I built the FastAPI backend and designed how the agent behaves: its rules and prompts, the knowledge base and pricing, the gates, and the test and release discipline. I set up the GoHighLevel, Meta and WhatsApp Business integrations, run the relationship with the clinic, and lead our production fixes.</p>
-        <p>I designed and built the phone agent myself: the conversation flows, the knowledge base, the Make scenarios, the phone line setup and the test plan.</p>
-      </section>
-
-      <section class="chapter" id="next" aria-labelledby="next-title">
-        <h2 id="next-title">What's next</h2>
-        <p>Onboarding a second clinic, moving the phone agent onto the same backend, measuring conversion and no-show rates properly, and adding alerts for silent failures.</p>
-        <div class="code-cta">
-          <p><strong>seda-chat-router</strong>The production code is private because it contains client configuration; a cleaned showcase version is on <a href="https://github.com/sahintekten/seda-chat-router">GitHub</a>.</p>
-          <a class="btn btn-primary" href="https://github.com/sahintekten/seda-chat-router">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 7-5 5 5 5M16 7l5 5-5 5"/></svg>
-            View the code
-          </a>
-        </div>
-        <p class="note">This page contains no patient data, and the clinic is not named.</p>
-        <div class="actions">
-          <a class="btn" href="mailto:sahin.tekten@ucdconnect.ie">Email me</a>
-          <a class="btn" href="https://www.linkedin.com/in/sahintekten">LinkedIn</a>
-          <a class="btn" href="https://github.com/sahintekten">GitHub</a>
-        </div>
-      </section>
+  <section class="chapter" id="problem" aria-labelledby="problem-title">
+    <div class="wrap">
+      <h2 id="problem-title">The problem</h2>
+      <p>Clinics in Turkey's health tourism sector advertise heavily on Instagram and Facebook. Every ad brings a wave of messages, and staff can't always answer them quickly. Slow replies cost clinics enquiries they have already paid for.</p>
+      <p>An AI that simply answers everything isn't the solution either. It has to quote the right prices, book real appointments, and above all know when not to talk: when a staff member has taken over, when a message arrives on a channel it shouldn't handle, or when it isn't sure.</p>
     </div>
-  </div>
+  </section>
+
+  <section class="chapter" id="conversations" aria-labelledby="conversations-title">
+    <div class="wrap">
+      <h2 id="conversations-title">Three real conversations</h2>
+      <div class="convos">
+        <div class="convo">
+          <h3 id="conv-1">Booking a consultation</h3>
+          <p class="source">real pilot conversation · July 2026 · Instagram DM · timestamps from the AI agent&#x27;s log (platform delivery delay not included) · calendar dates replaced with a generic weekday.</p>
+          <figure class="chat" aria-labelledby="conv-1">
+            <div class="chat-window">
+              <div class="chat-head"><span class="chat-avatar" aria-hidden="true">S</span><span class="chat-name">SEDA<span class="chat-channel">Instagram DM</span></span></div>
+              <ol class="chat-log">
+                <li class="msg msg-person"><span class="who">Person</span><div class="tr" lang="tr"><p>Hic farketmez ztn [konum detayı çıkarıldı] kac derseniz uygunum ben</p></div><p class="en">It doesn&#x27;t matter, [location detail removed], I&#x27;m available whenever you say.</p><time datetime="12:13:45">12:13:45</time></li>
+                <li class="msg msg-seda"><span class="who">SEDA</span><div class="tr" lang="tr"><p>Tabii efendim, Pazartesi için uygun saatlerimiz var.</p><p>Sabah: 10:00, 10:30, 11:00<br>Öğleden sonra: 14:15, 14:30, 14:45<br>Akşamüstü: 16:00, 16:30, 17:00</p><p>Başka saatlerimiz de mevcut; size en uygun saati yazmanız yeterli.</p></div><p class="en">Of course. We have openings on Monday.<br>Morning: 10:00, 10:30, 11:00<br>Afternoon: 14:15, 14:30, 14:45<br>Early evening: 16:00, 16:30, 17:00<br>Other times are also available; just tell me which suits you best.</p><time datetime="12:13:49">12:13:49</time></li>
+                <li class="chat-gap">2 messages omitted: small talk unrelated to the booking</li>
+                <li class="msg msg-person"><span class="who">Person</span><div class="tr" lang="tr"><p>11 diyelim</p></div><p class="en">Let&#x27;s say 11.</p><time datetime="12:15:03">12:15:03</time></li>
+                <li class="msg msg-seda"><span class="who">SEDA</span><div class="tr" lang="tr"><p>Harika efendim. Randevunuzu oluşturabilmem için ad soyadınızı ve telefon numaranızı yazar mısınız?</p></div><p class="en">Great. Could you share your full name and phone number so I can create your appointment?</p><time datetime="12:15:05">12:15:05</time></li>
+                <li class="msg msg-person"><span class="who">Person</span><div class="tr" lang="tr"><p>Tabi [Ad Soyad] [telefon]</p></div><p class="en">Sure, [Full name] [phone]</p><time datetime="12:15:38">12:15:38</time></li>
+                <li class="msg msg-seda"><span class="who">SEDA</span><div class="tr" lang="tr"><p>📅 Pazartesi<br>⏰ 11:00<br>📞 [telefon]</p><p>[Ad Soyad] adına kaydınızı oluşturuyorum, onaylıyor musunuz?</p></div><p class="en">📅 Monday · ⏰ 11:00 · 📞 [phone]<br>I&#x27;m creating the booking under [Full name]. Do you confirm?</p><time datetime="12:15:48">12:15:48</time></li>
+                <li class="msg msg-person"><span class="who">Person</span><div class="tr" lang="tr"><p>Onaylıyorum tabi kii</p></div><p class="en">Of course, I confirm.</p><time datetime="12:16:17">12:16:17</time></li>
+                <li class="msg msg-seda"><span class="who">SEDA</span><div class="tr" lang="tr"><p>Randevunuz Pazartesi saat 11:00 için oluşturuldu efendim.</p><p>İyi günler efendim!</p></div><p class="en">Your appointment has been booked for Monday at 11:00.<br>Have a nice day!</p><time datetime="12:16:23">12:16:23</time></li>
+              </ol>
+            </div>
+            <figcaption>Real conversation from the pilot. Names and details changed.</figcaption>
+          </figure>
+        </div>
+        <div class="convo">
+          <h3 id="conv-2">Staff takes over, SEDA goes quiet</h3>
+          <p class="source">real pilot conversation · July 2026 · WhatsApp · timestamps from the messaging platform&#x27;s log (end to end) · names, cities and dates masked.</p>
+          <figure class="chat" aria-labelledby="conv-2">
+            <div class="chat-window">
+              <div class="chat-head"><span class="chat-avatar" aria-hidden="true">S</span><span class="chat-name">SEDA<span class="chat-channel">WhatsApp</span></span></div>
+              <ol class="chat-log">
+                <li class="msg msg-person"><span class="who">Person</span><div class="tr" lang="tr"><p>[tarih]&#x27;den sonra iletişime geçebilirsiniz.</p></div><p class="en">You can contact me after [date].</p><time datetime="21:56:14">21:56:14</time></li>
+                <li class="msg msg-seda"><span class="who">SEDA</span><div class="tr" lang="tr"><p>Elbette E. Bey, notunuzu ilettim. Kliniğimiz [tarih]&#x27;ten sonra sizinle iletişime geçecek, iyi günler!</p></div><p class="en">Of course, Mr. E. I&#x27;ve passed on your note. The clinic will get in touch with you after [date]. Have a nice day!</p><time datetime="21:56:29">21:56:29</time></li>
+                <li class="msg msg-person"><span class="who">Person</span><div class="tr" lang="tr"><p>Tarih net sorun yok</p></div><p class="en">The date is firm, no problem.</p><time datetime="21:56:48">21:56:48</time></li>
+                <li class="msg msg-staff"><span class="who">Staff</span><div class="tr" lang="tr"><p>Şöyle E. bey istediğiniz tarihe biraz daha vakit olduğu için kesin bişi söyleyemiyoruz bazen ameliyatlarımız olabiliyor ve klinikte olmayabiliyoruz o yüzden geliceğiniz hafta randevu almanız daha sağlıklı olacaktır 🙏🏻</p></div><p class="en">Here&#x27;s the thing, Mr. E.: there&#x27;s still some time until the date you want, so we can&#x27;t promise anything for sure. Sometimes we have surgeries and may not be at the clinic, so it would be better to book in the week you&#x27;re coming. 🙏🏻</p><time datetime="22:54:31">22:54:31</time></li>
+                <li class="msg msg-person"><span class="who">Person</span><div class="tr" lang="tr"><p>Onun için [tarih]&#x27;te arayabilirsiniz dedim. [şehir A]&#x27;da olacağım o tarihte [şehir B]&#x27;ye geçebiliri.</p></div><p class="en">That&#x27;s why I said you could call me on [date]. I&#x27;ll be in [city A]; on that date I can come over to [city B].</p><time datetime="22:56:16">22:56:16</time></li>
+                <li class="msg msg-staff"><span class="who">Staff</span><div class="tr" lang="tr"><p>Tamamdır E. bey🙏🏻</p></div><p class="en">All right, Mr. E. 🙏🏻</p><time datetime="22:56:34">22:56:34</time></li>
+              </ol>
+            </div>
+            <figcaption>Real conversation from the pilot. Names and details changed.</figcaption>
+          </figure>
+        </div>
+        <div class="convo">
+          <h3 id="conv-3">First message from an ad</h3>
+          <p class="source">real pilot conversation · July 2026 · WhatsApp (click-to-WhatsApp ad) · timestamps from the messaging platform&#x27;s log (end to end) · prices and ad link masked.</p>
+          <figure class="chat" aria-labelledby="conv-3">
+            <div class="chat-window">
+              <div class="chat-head"><span class="chat-avatar" aria-hidden="true">S</span><span class="chat-name">SEDA<span class="chat-channel">WhatsApp (click-to-WhatsApp ad)</span></span></div>
+              <ol class="chat-log">
+                <li class="msg msg-person"><span class="who">Person</span><span class="bubble-note">the ad&#x27;s pre-filled message; ad link removed</span><div class="tr" lang="tr"><p>Merhaba! Üst göz kapağı estetiği için bilgi alabilir miyim?</p></div><p class="en">Hello! Could I get information about upper eyelid surgery?</p><time datetime="22:30:07">22:30:07</time></li>
+                <li class="msg msg-seda"><span class="who">SEDA</span><div class="tr" lang="tr"><p>Merhaba 🌸</p><p>✨ Üst Göz Kapağı Estetiği — Düşük üst göz kapağı görünümünü toparlayarak daha canlı ve genç bir ifade sağlar. İşlem ortalama 25-30 dakika sürer.<br>💉 Lokal anesteziyle klinikte ya da genel anesteziyle hastanede yapılabilir.<br>🧵 Estetik hayalet dikiş uygulanır, dikişler 1. haftada alınır. İyileşme süresi genelde 5-7 gündür.<br>💰 Ücret: [fiyat]</p><p>İsterseniz ücretsiz ön görüşme için uygun bir gün de planlayabilirim.</p></div><p class="en">Hello 🌸<br>✨ Upper eyelid surgery tightens drooping upper eyelids for a brighter, younger look. The procedure takes about 25-30 minutes.<br>💉 It can be done at the clinic under local anesthesia or at the hospital under general anesthesia.<br>🧵 Cosmetic hidden stitches are used and removed in the first week. Recovery usually takes 5-7 days.<br>💰 Price: [price]<br>If you like, I can also schedule a day for a free initial consultation.</p><time datetime="22:30:21">22:30:21</time></li>
+                <li class="msg msg-person"><span class="who">Person</span><div class="tr" lang="tr"><p>Üst göz kapağıyla beraber alt gözde yapılır mi</p></div><p class="en">Can the lower eyelids be done together with the upper ones?</p><time datetime="22:31:22">22:31:22</time></li>
+                <li class="msg msg-seda"><span class="who">SEDA</span><div class="tr" lang="tr"><p>Evet efendim, birlikte yapılabiliyor.</p><p>✨ Üst + Alt Göz Kapağı Birlikte — Aynı seansta dört kapağa birlikte işlem uygulanır.<br>💉 Lokal anesteziyle klinikte veya genel anesteziyle hastanede planlanabilir.<br>💰 Ücret: [fiyat]</p><p>En doğru planlamayı doktorumuz ücretsiz ön görüşmede netleştiriyor.</p></div><p class="en">Yes, they can be done together.<br>✨ Upper + lower eyelids together: all four eyelids are treated in the same session.<br>💉 It can be planned at the clinic under local anesthesia or at the hospital under general anesthesia.<br>💰 Price: [price]<br>Our doctor finalizes the best plan at the free initial consultation.</p><time datetime="22:31:37">22:31:37</time></li>
+              </ol>
+            </div>
+            <figcaption>Real conversation from the pilot. Names and details changed.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" id="how" aria-labelledby="how-title">
+    <div class="wrap">
+      <h2 id="how-title">How it works</h2>
+      <p>We started on a no-code tool, but the flows were fragile and impossible to test, so I moved to a FastAPI backend with one signed entry point.</p>
+      <figure class="diagram-figure">
+        <div class="diagram">
+          <svg class="diagram-wide" viewBox="0 0 1000 440" role="img" aria-labelledby="arch-title arch-desc">
+                      <title id="arch-title">Architecture of the live system</title>
+                      <desc id="arch-desc">Messages flow from the channels (WhatsApp, Instagram, Messenger) to GoHighLevel, then over a signed webhook to the FastAPI router. The router merges bursts, drops duplicates and runs fail-closed gates for staff takeover, channel and page, then adds ad campaign context and session versioning. It passes the conversation to the Retell AI agent, which uses a Claude model with the knowledge base in the prompt and calls tools for availability, booking and cancelling, notes, sample photos and record lookups. The reply goes back to GoHighLevel. GoHighLevel syncs two ways with Google Calendar, and the router stores sessions, logs and state in PostgreSQL.</desc>
+                      <defs>
+                        <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="svg-head" d="M0,0 L10,5 L0,10 z"/></marker>
+                        <marker id="ah-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="svg-head-accent" d="M0,0 L10,5 L0,10 z"/></marker>
+                      </defs>
+
+                      <rect class="svg-box" x="10" y="40" width="120" height="120" rx="6"/>
+                      <text class="svg-title" x="24" y="68">Channels</text>
+                      <text class="svg-text" x="24" y="92">WhatsApp</text>
+                      <text class="svg-text" x="24" y="114">Instagram</text>
+                      <text class="svg-text" x="24" y="136">Messenger</text>
+
+                      <rect class="svg-box" x="170" y="40" width="160" height="120" rx="6"/>
+                      <text class="svg-title" x="184" y="68">GoHighLevel</text>
+                      <text class="svg-text" x="184" y="92">CRM and inbox</text>
+                      <text class="svg-text" x="184" y="114">Calendar</text>
+                      <text class="svg-text" x="184" y="136">WhatsApp Business</text>
+
+                      <rect class="svg-box-accent" x="380" y="20" width="250" height="212" rx="6"/>
+                      <text class="svg-title" x="395" y="48">FastAPI router</text>
+                      <text class="svg-text" x="395" y="72">Merge bursts, drop duplicates</text>
+                      <rect class="svg-box-gate" x="395" y="88" width="220" height="66" rx="4"/>
+                      <text class="svg-gate-title" x="408" y="113">Gates (fail-closed)</text>
+                      <text class="svg-gate-text" x="408" y="139">Staff takeover, channel, page</text>
+                      <text class="svg-text" x="395" y="186">Ad campaign context</text>
+                      <text class="svg-text" x="395" y="210">Session versioning</text>
+
+                      <rect class="svg-box-accent" x="670" y="40" width="150" height="120" rx="6"/>
+                      <text class="svg-title" x="684" y="68">Retell AI agent</text>
+                      <text class="svg-text" x="684" y="92">Claude model</text>
+                      <text class="svg-text" x="684" y="114">Knowledge base</text>
+                      <text class="svg-text" x="684" y="136">in the prompt</text>
+
+                      <rect class="svg-box" x="860" y="20" width="130" height="164" rx="6"/>
+                      <text class="svg-title" x="874" y="48">Tools</text>
+                      <text class="svg-text" x="874" y="72">Availability</text>
+                      <text class="svg-text" x="874" y="94">Book, cancel</text>
+                      <text class="svg-text" x="874" y="116">Take a note</text>
+                      <text class="svg-text" x="874" y="138">Sample photos</text>
+                      <text class="svg-text" x="874" y="160">Look up records</text>
+
+                      <line class="svg-arrow" x1="130" y1="100" x2="168" y2="100" marker-end="url(#ah)"/>
+                      <line class="svg-arrow" x1="330" y1="100" x2="378" y2="100" marker-end="url(#ah)"/>
+                      <text class="svg-label" x="354" y="90" text-anchor="middle">signed</text>
+                      <line class="svg-arrow" x1="630" y1="100" x2="668" y2="100" marker-end="url(#ah)"/>
+                      <line class="svg-arrow" x1="820" y1="100" x2="858" y2="100" marker-end="url(#ah)"/>
+
+                      <rect class="svg-box" x="150" y="320" width="150" height="72" rx="6"/>
+                      <text class="svg-title" x="164" y="348">Google Calendar</text>
+                      <text class="svg-text" x="164" y="374">Two-way sync</text>
+                      <line class="svg-arrow" x1="225" y1="162" x2="225" y2="318" marker-start="url(#ah)" marker-end="url(#ah)"/>
+
+                      <rect class="svg-box" x="415" y="320" width="180" height="72" rx="6"/>
+                      <text class="svg-title" x="429" y="348">PostgreSQL</text>
+                      <text class="svg-text" x="429" y="374">Sessions, logs, state</text>
+                      <line class="svg-arrow" x1="505" y1="232" x2="505" y2="318" marker-end="url(#ah)"/>
+
+                      <path class="svg-reply" d="M745,160 V424 H316 V162" marker-end="url(#ah-accent)"/>
+                      <text class="svg-label-accent" x="640" y="415">reply</text>
+                    </svg>
+          <svg class="diagram-tall" viewBox="0 0 360 730" role="img" aria-labelledby="arch-title-m arch-desc-m">
+                      <title id="arch-title-m">Architecture of the live system</title>
+                      <desc id="arch-desc-m">Messages flow from the channels (WhatsApp, Instagram, Messenger) to GoHighLevel, then over a signed webhook to the FastAPI router. The router merges bursts, drops duplicates and runs fail-closed gates for staff takeover, channel and page, then adds ad campaign context and session versioning. It passes the conversation to the Retell AI agent, which uses a Claude model with the knowledge base in the prompt and calls tools for availability, booking and cancelling, notes, sample photos and record lookups. The reply goes back to GoHighLevel. GoHighLevel syncs two ways with Google Calendar, and the router stores sessions, logs and state in PostgreSQL.</desc>
+                      <defs>
+                        <marker id="ahm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="svg-head" d="M0,0 L10,5 L0,10 z"/></marker>
+                        <marker id="ahm-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="svg-head-accent" d="M0,0 L10,5 L0,10 z"/></marker>
+                      </defs>
+
+                      <rect class="svg-box" x="36" y="10" width="190" height="90" rx="6"/>
+                      <text class="svg-title" x="50" y="34">Channels</text>
+                      <text class="svg-text" x="50" y="54">WhatsApp</text>
+                      <text class="svg-text" x="50" y="71">Instagram</text>
+                      <text class="svg-text" x="50" y="88">Messenger</text>
+                      <line class="svg-arrow" x1="131" y1="100" x2="131" y2="128" marker-end="url(#ahm)"/>
+
+                      <rect class="svg-box" x="36" y="130" width="190" height="90" rx="6"/>
+                      <text class="svg-title" x="50" y="154">GoHighLevel</text>
+                      <text class="svg-text" x="50" y="174">CRM and inbox</text>
+                      <text class="svg-text" x="50" y="191">Calendar</text>
+                      <text class="svg-text" x="50" y="208">WhatsApp Business</text>
+
+                      <rect class="svg-box" x="260" y="140" width="95" height="70" rx="6"/>
+                      <text class="svg-title" x="268" y="160">Google</text>
+                      <text class="svg-title" x="268" y="177">Calendar</text>
+                      <text class="svg-text" x="268" y="198">Two-way sync</text>
+                      <line class="svg-arrow" x1="228" y1="175" x2="258" y2="175" marker-start="url(#ahm)" marker-end="url(#ahm)"/>
+
+                      <line class="svg-arrow" x1="131" y1="220" x2="131" y2="258" marker-end="url(#ahm)"/>
+                      <text class="svg-label" x="141" y="244">signed</text>
+
+                      <rect class="svg-box-accent" x="36" y="260" width="190" height="200" rx="6"/>
+                      <text class="svg-title" x="50" y="284">FastAPI router</text>
+                      <text class="svg-text" x="50" y="304">Merge bursts,</text>
+                      <text class="svg-text" x="50" y="320">drop duplicates</text>
+                      <rect class="svg-box-gate" x="50" y="334" width="162" height="66" rx="4"/>
+                      <text class="svg-gate-title" x="60" y="354">Gates (fail-closed)</text>
+                      <text class="svg-gate-text" x="60" y="373">Staff takeover,</text>
+                      <text class="svg-gate-text" x="60" y="389">channel, page</text>
+                      <text class="svg-text" x="50" y="424">Ad campaign context</text>
+                      <text class="svg-text" x="50" y="442">Session versioning</text>
+
+                      <rect class="svg-box" x="260" y="300" width="95" height="76" rx="6"/>
+                      <text class="svg-title" x="268" y="320">PostgreSQL</text>
+                      <text class="svg-text" x="268" y="342">Sessions, logs,</text>
+                      <text class="svg-text" x="268" y="358">state</text>
+                      <line class="svg-arrow" x1="228" y1="338" x2="258" y2="338" marker-end="url(#ahm)"/>
+
+                      <line class="svg-arrow" x1="131" y1="460" x2="131" y2="488" marker-end="url(#ahm)"/>
+
+                      <rect class="svg-box-accent" x="36" y="490" width="190" height="72" rx="6"/>
+                      <text class="svg-title" x="50" y="514">Retell AI agent</text>
+                      <text class="svg-text" x="50" y="534">Claude model</text>
+                      <text class="svg-text" x="50" y="551">Knowledge base in the prompt</text>
+
+                      <line class="svg-arrow" x1="131" y1="562" x2="131" y2="590" marker-end="url(#ahm)"/>
+
+                      <rect class="svg-box" x="36" y="592" width="190" height="128" rx="6"/>
+                      <text class="svg-title" x="50" y="616">Tools</text>
+                      <text class="svg-text" x="50" y="636">Availability</text>
+                      <text class="svg-text" x="50" y="653">Book, cancel</text>
+                      <text class="svg-text" x="50" y="670">Take a note</text>
+                      <text class="svg-text" x="50" y="687">Sample photos</text>
+                      <text class="svg-text" x="50" y="704">Look up records</text>
+
+                      <path class="svg-reply" d="M36,526 H18 V175 H34" marker-end="url(#ahm-accent)"/>
+                      <text class="svg-label-accent" transform="translate(12 350) rotate(-90)" text-anchor="middle">reply</text>
+                    </svg>
+        </div>
+        <figcaption>Architecture of the live system. The gates (amber) run before the agent ever sees a message.</figcaption>
+      </figure>
+      <ol class="steps">
+        <li><span class="num" aria-hidden="true">1</span><p>A message arrives via Meta into GoHighLevel, the clinic's CRM, inbox and calendar.</p></li>
+        <li><span class="num" aria-hidden="true">2</span><p>GoHighLevel forwards it to the backend through a single signed webhook.</p></li>
+        <li><span class="num" aria-hidden="true">3</span><p>The router merges quick bursts into one turn and drops duplicates.</p></li>
+        <li class="gate-step"><span class="num" aria-hidden="true">4</span><p>Gates decide whether the agent may answer at all. If anything is unclear, it stays silent.</p></li>
+        <li><span class="num" aria-hidden="true">5</span><p>The router adds context, including which of about 80 ad campaign links the person came from.</p></li>
+        <li><span class="num" aria-hidden="true">6</span><p>The agent on Retell AI runs on a Claude model with the clinic's knowledge base in its prompt; sessions are pinned to a prompt version.</p></li>
+        <li><span class="num" aria-hidden="true">7</span><p>The agent calls tools: availability, booking and cancelling, notes, sample photos, record lookups.</p></li>
+        <li><span class="num" aria-hidden="true">8</span><p>The reply goes back through GoHighLevel; bookings sync to Google Calendar and the clinic owner is notified.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="chapter" id="engineering" aria-labelledby="engineering-title">
+    <div class="wrap">
+      <h2 id="engineering-title">Three engineering problems</h2>
+      <h3>Knowing when to stay silent</h3>
+      <p>The agent's boundaries are enforced in code, not only in its prompt. Before the agent sees a message, gates check whether a staff member has taken over and whether the channel and page are enabled for the bot. If any check fails or anything is unclear, the system stays silent: it fails closed. A dry-run switch lets us test without sending anything, and after every prompt release we verify the version actually being served.</p>
+      <div class="callout"><p>We test the gates by breaking them. A mutation check script removes each of the 10 safety gates in turn, and the test suite has to fail every time. It does, 10 out of 10. Separately, there are 267 automated tests.</p></div>
+      <h3>Conversations that outlive a prompt</h3>
+      <p>Sessions are pinned to a prompt version so a conversation doesn't change behaviour midway. The cost: after a pricing update, conversations that started earlier kept quoting old prices and links. I built a session-retirement mechanism with two criteria and retired 2,051 sessions in one go. Each new session starts with a summary of the old one, so nobody had to repeat themselves.</p>
+      <h3>Trusting what comes in and what goes out</h3>
+      <p>Every inbound request is checked against its Ed25519 signature and resolved to a clinic before anything runs; requests that can't be matched are rejected. Messages for one person are processed one at a time, so bursts can't race each other. Every outgoing message is recorded in a ledger, and the ledger is repaired after upstream errors, so the router always knows exactly what it has sent.</p>
+    </div>
+  </section>
+
+  <section class="chapter" id="results" aria-labelledby="results-title">
+    <div class="wrap">
+      <h2 id="results-title">Results from the pilot</h2>
+      <p>All figures measured in the live pilot. One sample week, 1 to 7 September 2026:</p>
+      <table class="results">
+        <caption class="visually-hidden">Sample week, 1 to 7 September 2026</caption>
+        <tbody>
+          <tr><th scope="row">People who messaged the clinic</th><td>534</td></tr>
+          <tr><th scope="row">Messages received</th><td>3,133</td></tr>
+          <tr><th scope="row">Replies sent by the agent</th><td>1,210</td></tr>
+          <tr><th scope="row">Median reply time (90th percentile)</th><td>~20 s (~24 s)</td></tr>
+          <tr><th scope="row">Accuracy on price answers, in audits</th><td>99.2%</td></tr>
+          <tr><th scope="row">Conversations matched to the ad they came from</th><td>76%</td></tr>
+          <tr><th scope="row">Consultations booked by the agent in a six-day window, each checked against the calendar</th><td>13</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="chapter" id="phone" aria-labelledby="phone-title">
+    <div class="wrap">
+      <h2 id="phone-title">The phone agent</h2>
+      <p>Alongside messaging, I built SEDA's phone agent on Retell's Conversation Flow with Make handling the tool calls. It answers calls in Turkish, gives clinic information, checks availability, books and cancels appointments, takes messages and passes urgent cases to the clinic. It has been validated end to end with real test calls but isn't in production yet: the clinic's main line hasn't been routed to it, and we prioritised messaging for the pilot.</p>
+      <p>Safeguards: cancelling requires looking up the booking first, ownership is checked against the caller's number, requests without a clinic ID are rejected, and the agent never confirms an action until the tool reports success. Validation: real test calls (booking on 4 July 2026, cancellation on 6 July), an 11-scenario notification matrix, a 9-scenario Turkish simulation set, and a daily reconciliation check. To show it in English, I also set up a fictional Dublin clinic on an Irish phone line.</p>
+      <figure class="diagram-figure">
+        <div class="diagram">
+          <svg class="diagram-wide" viewBox="0 0 1000 340" role="img" aria-labelledby="phone-arch-title phone-arch-desc">
+                      <title id="phone-arch-title">The phone agent's architecture</title>
+                      <desc id="phone-arch-desc">A call comes in over a SIP phone line (Verimor in Turkey, Telnyx in Ireland) to the Retell agent, built with Conversation Flow and a knowledge base that contains no prices. Each action goes to Make webhooks, which route by agent ID and reject requests without a clinic ID, then run the calendar and CRM action. The result goes back to the agent. After the call, a post-call analysis step leads to a clinic notification.</desc>
+                      <defs>
+                        <marker id="pah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="svg-head" d="M0,0 L10,5 L0,10 z"/></marker>
+                        <marker id="pah-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="svg-head-accent" d="M0,0 L10,5 L0,10 z"/></marker>
+                      </defs>
+
+                      <rect class="svg-box" x="10" y="50" width="150" height="100" rx="6"/>
+                      <text class="svg-title" x="24" y="78">SIP line</text>
+                      <text class="svg-text" x="24" y="102">Verimor TR</text>
+                      <text class="svg-text" x="24" y="124">Telnyx IE</text>
+
+                      <rect class="svg-box-accent" x="210" y="40" width="180" height="120" rx="6"/>
+                      <text class="svg-title" x="224" y="68">Retell agent</text>
+                      <text class="svg-text" x="224" y="92">Conversation Flow</text>
+                      <text class="svg-text" x="224" y="114">Knowledge base,</text>
+                      <text class="svg-text" x="224" y="136">no prices</text>
+
+                      <rect class="svg-box" x="440" y="20" width="250" height="160" rx="6"/>
+                      <text class="svg-title" x="455" y="48">Make webhooks</text>
+                      <rect class="svg-box-gate" x="455" y="64" width="220" height="98" rx="4"/>
+                      <text class="svg-gate-text" x="468" y="90">Route by agent ID</text>
+                      <text class="svg-gate-text" x="468" y="118">Reject requests without</text>
+                      <text class="svg-gate-text" x="468" y="140">a clinic ID</text>
+
+                      <rect class="svg-box" x="740" y="65" width="180" height="70" rx="6"/>
+                      <text class="svg-title" x="756" y="106">Calendar and CRM</text>
+
+                      <line class="svg-arrow" x1="160" y1="100" x2="208" y2="100" marker-end="url(#pah)"/>
+                      <line class="svg-arrow" x1="390" y1="100" x2="438" y2="100" marker-end="url(#pah)"/>
+                      <line class="svg-arrow" x1="690" y1="100" x2="738" y2="100" marker-end="url(#pah)"/>
+
+                      <path class="svg-reply" d="M600,180 V222 H340 V162" marker-end="url(#pah-accent)"/>
+                      <text class="svg-label-accent" x="470" y="214" text-anchor="middle">result</text>
+
+                      <line class="svg-arrow" x1="270" y1="160" x2="270" y2="258" marker-end="url(#pah)"/>
+                      <rect class="svg-box" x="190" y="260" width="200" height="60" rx="6"/>
+                      <text class="svg-title" x="206" y="296">Post-call analysis</text>
+                      <line class="svg-arrow" x1="390" y1="290" x2="438" y2="290" marker-end="url(#pah)"/>
+                      <rect class="svg-box" x="440" y="260" width="200" height="60" rx="6"/>
+                      <text class="svg-title" x="456" y="296">Clinic notification</text>
+                    </svg>
+          <svg class="diagram-tall" viewBox="0 0 360 450" role="img" aria-labelledby="phone-arch-title-m phone-arch-desc-m">
+                      <title id="phone-arch-title-m">The phone agent's architecture</title>
+                      <desc id="phone-arch-desc-m">A call comes in over a SIP phone line (Verimor in Turkey, Telnyx in Ireland) to the Retell agent, built with Conversation Flow and a knowledge base that contains no prices. Each action goes to Make webhooks, which route by agent ID and reject requests without a clinic ID, then run the calendar and CRM action. The result goes back to the agent. After the call, a post-call analysis step leads to a clinic notification.</desc>
+                      <defs>
+                        <marker id="pahm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="svg-head" d="M0,0 L10,5 L0,10 z"/></marker>
+                        <marker id="pahm-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="svg-head-accent" d="M0,0 L10,5 L0,10 z"/></marker>
+                      </defs>
+
+                      <rect class="svg-box" x="36" y="10" width="190" height="80" rx="6"/>
+                      <text class="svg-title" x="50" y="34">SIP line</text>
+                      <text class="svg-text" x="50" y="54">Verimor TR</text>
+                      <text class="svg-text" x="50" y="71">Telnyx IE</text>
+                      <line class="svg-arrow" x1="131" y1="90" x2="131" y2="118" marker-end="url(#pahm)"/>
+
+                      <rect class="svg-box-accent" x="36" y="120" width="190" height="92" rx="6"/>
+                      <text class="svg-title" x="50" y="144">Retell agent</text>
+                      <text class="svg-text" x="50" y="164">Conversation Flow</text>
+                      <text class="svg-text" x="50" y="181">Knowledge base,</text>
+                      <text class="svg-text" x="50" y="198">no prices</text>
+
+                      <line class="svg-arrow" x1="226" y1="166" x2="246" y2="166" marker-end="url(#pahm)"/>
+                      <rect class="svg-box" x="248" y="138" width="108" height="56" rx="6"/>
+                      <text class="svg-title" x="258" y="160">Post-call</text>
+                      <text class="svg-title" x="258" y="178">analysis</text>
+                      <line class="svg-arrow" x1="302" y1="194" x2="302" y2="246" marker-end="url(#pahm)"/>
+                      <rect class="svg-box" x="248" y="248" width="108" height="56" rx="6"/>
+                      <text class="svg-title" x="258" y="270">Clinic</text>
+                      <text class="svg-title" x="258" y="288">notification</text>
+
+                      <line class="svg-arrow" x1="131" y1="212" x2="131" y2="240" marker-end="url(#pahm)"/>
+                      <rect class="svg-box" x="36" y="242" width="190" height="124" rx="6"/>
+                      <text class="svg-title" x="50" y="266">Make webhooks</text>
+                      <rect class="svg-box-gate" x="50" y="280" width="162" height="72" rx="4"/>
+                      <text class="svg-gate-text" x="60" y="300">Route by agent ID</text>
+                      <text class="svg-gate-text" x="60" y="320">Reject requests</text>
+                      <text class="svg-gate-text" x="60" y="337">without a clinic ID</text>
+
+                      <line class="svg-arrow" x1="131" y1="366" x2="131" y2="394" marker-end="url(#pahm)"/>
+                      <rect class="svg-box" x="36" y="396" width="190" height="46" rx="6"/>
+                      <text class="svg-title" x="50" y="424">Calendar and CRM</text>
+
+                      <path class="svg-reply" d="M36,320 H18 V180 H34" marker-end="url(#pahm-accent)"/>
+                      <text class="svg-label-accent" transform="translate(12 250) rotate(-90)" text-anchor="middle">result</text>
+                    </svg>
+        </div>
+        <figcaption class="visually-hidden">The phone agent's architecture.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="chapter" id="role" aria-labelledby="role-title">
+    <div class="wrap">
+      <h2 id="role-title">My role</h2>
+      <p>I'm the product owner. I built the FastAPI backend and designed how the agent behaves: its rules and prompts, the knowledge base and pricing, the gates, and the test and release discipline. I set up the GoHighLevel, Meta and WhatsApp Business integrations, run the relationship with the clinic, and lead our production fixes.</p>
+    </div>
+  </section>
+
+  <section class="chapter" id="next" aria-labelledby="next-title">
+    <div class="wrap">
+      <h2 id="next-title">What's next</h2>
+      <p>Onboarding a second clinic, moving the phone agent onto the same backend, measuring conversion and no-show rates properly, and adding alerts for silent failures.</p>
+      <p class="note">This page contains no patient data, and the clinic is not named. The production code is private because it contains client configuration; a cleaned showcase version is on <a href="https://github.com/sahintekten/seda-chat-router">GitHub</a>.</p>
+    </div>
+  </section>
 
 </main>
 
 <footer class="site-footer">
   <div class="wrap">
     <p>Sahin Tekten</p>
-    <p><a href="/">Back to home</a></p>
+    <p><a href="https://github.com/sahintekten/seda-chat-router">Code on GitHub</a></p>
   </div>
 </footer>
 </body>
