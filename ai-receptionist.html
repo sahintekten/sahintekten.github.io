@@ -6,9 +6,11 @@
 <title>SEDA case study: an AI receptionist that knows when to stay quiet | Sahin Tekten</title>
 <meta name="description" content="SEDA answers clinic enquiries on WhatsApp, Instagram and Messenger, qualifies each person and books a free consultation.">
 <meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#F5F1EA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#161512" media="(prefers-color-scheme: dark)">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500&display=swap">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -16,10 +18,12 @@
 
 <header class="site-header">
   <div class="wrap">
-    <a class="home" href="/">Sahin Tekten</a>
-    <nav aria-label="Main">
+    <a class="wordmark" href="/">Sahin Tekten</a>
+    <nav class="site-nav" aria-label="Main">
       <ul>
-        <li><a href="/#other-work">Other work</a></li>
+        <li><a href="/ai-receptionist.html" aria-current="page">Case study</a></li>
+        <li><a href="/#work">Other work</a></li>
+        <li><a href="/#experience">Experience</a></li>
         <li><a href="/#contact">Contact</a></li>
       </ul>
     </nav>
@@ -28,14 +32,18 @@
 
 <main id="main" tabindex="-1">
 
-  <div class="wrap">
-    <a class="back" href="/">Back to home</a>
-  </div>
-
   <section class="case-hero" aria-labelledby="case-title">
     <div class="wrap">
+      <a class="back" href="/">Back to home</a>
       <h1 id="case-title">An AI receptionist that knows when to stay quiet</h1>
       <p class="lede">SEDA answers clinic enquiries on WhatsApp, Instagram and Messenger, qualifies each person and books a free consultation. It has been piloted with a cosmetic surgery clinic in Istanbul since July 2026. This page explains how it works, the problems we hit in production and what the numbers say. It also includes a phone agent that I built and tested end to end, which isn't in production yet.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="https://github.com/sahintekten/seda-chat-router">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 7-5 5 5 5M16 7l5 5-5 5"/></svg>
+          View the code
+        </a>
+        <a class="btn" href="#results">Results from the pilot</a>
+      </div>
       <dl class="summary">
         <div><dt>My role</dt><dd>Co-founder, product lead</dd></div>
         <div><dt>Team</dt><dd>Two co-founders</dd></div>
@@ -45,31 +53,59 @@
     </div>
   </section>
 
-  <section class="section prose" aria-labelledby="problem-title">
-    <div class="wrap">
-      <h2 id="problem-title">The problem</h2>
-      <p>Clinics in Turkey's health tourism sector advertise heavily on Instagram and Facebook. Every ad brings a wave of messages, and staff can't always answer them quickly. Slow replies cost clinics enquiries they have already paid for.</p>
-      <p>An AI that simply answers everything isn't the solution either. It has to quote the right prices, book real appointments, and above all know when not to talk: when a staff member has taken over, when a message arrives on a channel it shouldn't handle, or when it isn't sure.</p>
-    </div>
-  </section>
-
-  <section class="section" aria-labelledby="how-title">
-    <div class="wrap">
-      <h2 id="how-title">How a message is handled</h2>
-      <ol class="steps">
-        <li><span class="num" aria-hidden="true">1</span><p>A person messages the clinic on WhatsApp, Instagram or Messenger. Meta delivers it to GoHighLevel, which the clinic uses as its CRM, inbox and calendar.</p></li>
-        <li><span class="num" aria-hidden="true">2</span><p>GoHighLevel forwards it to our FastAPI backend through a single signed webhook, so every message enters the system the same way.</p></li>
-        <li><span class="num" aria-hidden="true">3</span><p>The router merges quick bursts of messages into one turn and drops duplicates.</p></li>
-        <li class="gate-step"><span class="num" aria-hidden="true">4</span><p>Gates decide whether the agent may answer at all: has a staff member taken over, is this channel and page enabled for the bot? If anything is unclear, it stays silent.</p></li>
-        <li><span class="num" aria-hidden="true">5</span><p>The router adds context, including which ad the person came from, using a map of about 80 campaign links.</p></li>
-        <li><span class="num" aria-hidden="true">6</span><p>The conversation goes to the agent on Retell AI, which runs on a Claude model with the clinic's knowledge base in its prompt. Sessions are pinned to a prompt version so a conversation doesn't change behaviour midway.</p></li>
-        <li><span class="num" aria-hidden="true">7</span><p>The agent calls tools: check availability, book or cancel an appointment, take a note, send sample photos, look up earlier records.</p></li>
-        <li><span class="num" aria-hidden="true">8</span><p>The reply goes back through GoHighLevel. Bookings land in the clinic's calendar and sync to Google Calendar, and the clinic owner gets a notification for each type of event.</p></li>
+  <div class="wrap case-layout">
+    <nav class="toc" aria-labelledby="toc-title">
+      <h2 id="toc-title">On this page</h2>
+      <ol>
+        <li><a href="#problem">The problem</a></li>
+<li><a href="#flow">How a message is handled</a></li>
+<li><a href="#silence">Deciding when to stay silent</a></li>
+<li><a href="#production">Problems solved in production</a></li>
+<li><a href="#decisions">Decisions that shaped it</a></li>
+<li><a href="#results">Results from the pilot</a></li>
+<li><a href="#phone">The phone agent</a></li>
+<li><a href="#role">My role</a></li>
+<li><a href="#next">What's next</a></li>
       </ol>
+    </nav>
 
-      <figure>
-        <div class="diagram">
-          <svg class="diagram-wide" viewBox="0 0 1000 440" role="img" aria-labelledby="arch-title arch-desc">
+    <div class="case-content">
+      <details class="toc-mobile">
+        <summary>On this page</summary>
+        <ol>
+          <li><a href="#problem">The problem</a></li>
+<li><a href="#flow">How a message is handled</a></li>
+<li><a href="#silence">Deciding when to stay silent</a></li>
+<li><a href="#production">Problems solved in production</a></li>
+<li><a href="#decisions">Decisions that shaped it</a></li>
+<li><a href="#results">Results from the pilot</a></li>
+<li><a href="#phone">The phone agent</a></li>
+<li><a href="#role">My role</a></li>
+<li><a href="#next">What's next</a></li>
+        </ol>
+      </details>
+
+      <section class="chapter" id="problem" aria-labelledby="problem-title">
+        <h2 id="problem-title">The problem</h2>
+        <p>Clinics in Turkey's health tourism sector advertise heavily on Instagram and Facebook. Every ad brings a wave of messages, and staff can't always answer them quickly. Slow replies cost clinics enquiries they have already paid for.</p>
+        <p>An AI that simply answers everything isn't the solution either. It has to quote the right prices, book real appointments, and above all know when not to talk: when a staff member has taken over, when a message arrives on a channel it shouldn't handle, or when it isn't sure.</p>
+      </section>
+
+      <section class="chapter" id="flow" aria-labelledby="flow-title">
+        <h2 id="flow-title">How a message is handled</h2>
+        <ol class="steps">
+          <li><span class="num" aria-hidden="true">1</span><p>A person messages the clinic on WhatsApp, Instagram or Messenger. Meta delivers it to GoHighLevel, which the clinic uses as its CRM, inbox and calendar.</p></li>
+          <li><span class="num" aria-hidden="true">2</span><p>GoHighLevel forwards it to our FastAPI backend through a single signed webhook, so every message enters the system the same way.</p></li>
+          <li><span class="num" aria-hidden="true">3</span><p>The router merges quick bursts of messages into one turn and drops duplicates.</p></li>
+          <li class="gate-step"><span class="num" aria-hidden="true">4</span><p>Gates decide whether the agent may answer at all: has a staff member taken over, is this channel and page enabled for the bot? If anything is unclear, it stays silent.</p></li>
+          <li><span class="num" aria-hidden="true">5</span><p>The router adds context, including which ad the person came from, using a map of about 80 campaign links.</p></li>
+          <li><span class="num" aria-hidden="true">6</span><p>The conversation goes to the agent on Retell AI, which runs on a Claude model with the clinic's knowledge base in its prompt. Sessions are pinned to a prompt version so a conversation doesn't change behaviour midway.</p></li>
+          <li><span class="num" aria-hidden="true">7</span><p>The agent calls tools: check availability, book or cancel an appointment, take a note, send sample photos, look up earlier records.</p></li>
+          <li><span class="num" aria-hidden="true">8</span><p>The reply goes back through GoHighLevel. Bookings land in the clinic's calendar and sync to Google Calendar, and the clinic owner gets a notification for each type of event.</p></li>
+        </ol>
+        <figure>
+          <div class="diagram">
+            <svg class="diagram-wide" viewBox="0 0 1000 440" role="img" aria-labelledby="arch-title arch-desc">
             <title id="arch-title">Architecture of the live system</title>
             <desc id="arch-desc">Messages flow from the channels (WhatsApp, Instagram, Messenger) to GoHighLevel, then over a signed webhook to the FastAPI router. The router merges bursts, drops duplicates and runs fail-closed gates for staff takeover, channel and page, then adds ad campaign context and session versioning. It passes the conversation to the Retell AI agent, which uses a Claude model with the knowledge base in the prompt and calls tools for availability, booking and cancelling, notes, sample photos and record lookups. The reply goes back to GoHighLevel. GoHighLevel syncs two ways with Google Calendar, and the router stores sessions, logs and state in PostgreSQL.</desc>
             <defs>
@@ -131,8 +167,7 @@
             <path class="svg-reply" d="M745,160 V424 H316 V162" marker-end="url(#ah-accent)"/>
             <text class="svg-label-accent" x="640" y="415">reply</text>
           </svg>
-
-          <svg class="diagram-tall" viewBox="0 0 360 730" role="img" aria-labelledby="arch-title-m arch-desc-m">
+            <svg class="diagram-tall" viewBox="0 0 360 730" role="img" aria-labelledby="arch-title-m arch-desc-m">
             <title id="arch-title-m">Architecture of the live system</title>
             <desc id="arch-desc-m">Messages flow from the channels (WhatsApp, Instagram, Messenger) to GoHighLevel, then over a signed webhook to the FastAPI router. The router merges bursts, drops duplicates and runs fail-closed gates for staff takeover, channel and page, then adds ad campaign context and session versioning. It passes the conversation to the Retell AI agent, which uses a Claude model with the knowledge base in the prompt and calls tools for availability, booking and cancelling, notes, sample photos and record lookups. The reply goes back to GoHighLevel. GoHighLevel syncs two ways with Google Calendar, and the router stores sessions, logs and state in PostgreSQL.</desc>
             <defs>
@@ -199,99 +234,88 @@
             <path class="svg-reply" d="M36,526 H18 V175 H34" marker-end="url(#ahm-accent)"/>
             <text class="svg-label-accent" transform="translate(12 350) rotate(-90)" text-anchor="middle">reply</text>
           </svg>
-        </div>
-        <figcaption>Architecture of the live system. The gates (amber) run before the agent ever sees a message.</figcaption>
-      </figure>
-    </div>
-  </section>
+          </div>
+          <figcaption>Architecture of the live system. The gates (amber) run before the agent ever sees a message.</figcaption>
+        </figure>
+      </section>
 
-  <section class="section prose" aria-labelledby="silent-title">
-    <div class="wrap">
-      <h2 id="silent-title">Deciding when to stay silent</h2>
-      <p>The most important design decision was to enforce the agent's boundaries in code, not only in its prompt. A prompt can be misread; a gate can't. Before the agent sees a message, the router checks whether a staff member has taken over the conversation, and whether this channel and page are enabled for the bot. If any check fails or anything is unclear, the system stays silent. We call this failing closed.</p>
-      <p>A few operating rules back this up. A dry-run switch lets us test changes without sending anything. We never simulate conversations against the live clinic. And we treat "published" and "live" as different things: after every prompt release we check the version that is actually being served.</p>
-      <div class="callout">
-        <p>We test the gates by breaking them. A mutation check script removes each of the 10 safety gates in turn, and the test suite has to fail every time; it does, 10 out of 10. If the tests still pass without a gate, the tests aren't good enough. Separately, there are 267 automated tests.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" aria-labelledby="problems-title">
-    <div class="wrap">
-      <h2 id="problems-title">Three problems we solved in production</h2>
-      <div class="three">
-        <div>
-          <h3>Old conversations, old prices</h3>
-          <p>Because sessions are pinned to a prompt version, conversations that started before a pricing update kept quoting the old prices and links. We built a session-retirement mechanism with two criteria and retired 2,051 sessions in one go. Each new session starts with a summary of the old one, so nobody had to repeat themselves.</p>
+      <section class="chapter" id="silence" aria-labelledby="silence-title">
+        <h2 id="silence-title">Deciding when to stay silent</h2>
+        <p>The most important design decision was to enforce the agent's boundaries in code, not only in its prompt. A prompt can be misread; a gate can't. Before the agent sees a message, the router checks whether a staff member has taken over the conversation, and whether this channel and page are enabled for the bot. If any check fails or anything is unclear, the system stays silent. We call this failing closed.</p>
+        <p>A few operating rules back this up. A dry-run switch lets us test changes without sending anything. We never simulate conversations against the live clinic. And we treat "published" and "live" as different things: after every prompt release we check the version that is actually being served.</p>
+        <div class="callout">
+          <p><span class="big">10 out of 10</span>We test the gates by breaking them. A mutation check script removes each of the 10 safety gates in turn, and the test suite has to fail every time; it does, 10 out of 10. If the tests still pass without a gate, the tests aren't good enough. Separately, there are 267 automated tests.</p>
         </div>
-        <div>
-          <h3>A WhatsApp template that kept breaking</h3>
-          <p>A time variable in a WhatsApp message template kept going out wrong. Our fixes didn't help, because Meta's template approval window meant the old version kept being sent. We removed the time variable from the template body altogether, and the next 32 of 32 messages went out correctly.</p>
-        </div>
-        <div>
-          <h3>A map card with outdated details</h3>
-          <p>When the agent shared the clinic's location, the map preview showed the doctor's old title and photo. We switched to coordinate-based links, added a filter that cleans links before a message is sent, and retired the affected sessions.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+      </section>
 
-  <section class="section" aria-labelledby="decisions-title">
-    <div class="wrap">
-      <h2 id="decisions-title">Three decisions that shaped the system</h2>
-      <div class="three">
-        <div>
-          <h3>Our own backend instead of a no-code tool</h3>
-          <p>We started on Make, but the scenarios were fragile and impossible to test properly. Moving to our own FastAPI backend, with one signed entry point, gave us tests, version control and full control over behaviour.</p>
+      <section class="chapter" id="production" aria-labelledby="production-title">
+        <h2 id="production-title">Three problems we solved in production</h2>
+        <div class="pairs">
+          <div>
+            <h3>Old conversations, old prices</h3>
+            <p>Because sessions are pinned to a prompt version, conversations that started before a pricing update kept quoting the old prices and links. We built a session-retirement mechanism with two criteria and retired 2,051 sessions in one go. Each new session starts with a summary of the old one, so nobody had to repeat themselves.</p>
+          </div>
+          <div>
+            <h3>A WhatsApp template that kept breaking</h3>
+            <p>A time variable in a WhatsApp message template kept going out wrong. Our fixes didn't help, because Meta's template approval window meant the old version kept being sent. We removed the time variable from the template body altogether, and the next 32 of 32 messages went out correctly.</p>
+          </div>
+          <div>
+            <h3>A map card with outdated details</h3>
+            <p>When the agent shared the clinic's location, the map preview showed the doctor's old title and photo. We switched to coordinate-based links, added a filter that cleans links before a message is sent, and retired the affected sessions.</p>
+          </div>
         </div>
-        <div>
-          <h3>One system for CRM, inbox and calendar</h3>
-          <p>We had built our own CRM panel, but retired it in favour of GoHighLevel. It gives clinics the WhatsApp Business line, the inbox and the calendar in one white-labelled place, which is what they actually use day to day.</p>
+      </section>
+
+      <section class="chapter" id="decisions" aria-labelledby="decisions-title">
+        <h2 id="decisions-title">Three decisions that shaped the system</h2>
+        <div class="pairs">
+          <div>
+            <h3>Our own backend instead of a no-code tool</h3>
+            <p>We started on Make, but the scenarios were fragile and impossible to test properly. Moving to our own FastAPI backend, with one signed entry point, gave us tests, version control and full control over behaviour.</p>
+          </div>
+          <div>
+            <h3>One system for CRM, inbox and calendar</h3>
+            <p>We had built our own CRM panel, but retired it in favour of GoHighLevel. It gives clinics the WhatsApp Business line, the inbox and the calendar in one white-labelled place, which is what they actually use day to day.</p>
+          </div>
+          <div>
+            <h3>Behaviour guaranteed by code</h3>
+            <p>Staff takeover, channel and page rules live in the router as gates, so when the bot stays silent is a guarantee rather than a hope. The prompt handles how it speaks; the code handles whether it speaks.</p>
+          </div>
         </div>
-        <div>
-          <h3>Behaviour guaranteed by code</h3>
-          <p>Staff takeover, channel and page rules live in the router as gates, so when the bot stays silent is a guarantee rather than a hope. The prompt handles how it speaks; the code handles whether it speaks.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+      </section>
 
-  <section class="section prose" aria-labelledby="results-title">
-    <div class="wrap">
-      <h2 id="results-title">Results from the pilot</h2>
-      <p>All figures are measured in the live pilot. On a normal day SEDA handles around 300 agent runs for 100 to 160 different people. Here is one sample week, 1 to 7 September 2026:</p>
-      <table class="results">
-        <caption class="visually-hidden">Sample week, 1 to 7 September 2026</caption>
-        <tbody>
-          <tr><th scope="row">People who messaged the clinic</th><td>534</td></tr>
-          <tr><th scope="row">Messages received</th><td>3,133</td></tr>
-          <tr><th scope="row">Replies sent by the agent</th><td>1,210</td></tr>
-          <tr><th scope="row">Median reply time (90th percentile)</th><td>~20 s (~24 s)</td></tr>
-          <tr><th scope="row">Accuracy on price answers, in audits</th><td>99.2%</td></tr>
-          <tr><th scope="row">Conversations matched to the ad they came from</th><td>76%</td></tr>
-          <tr><th scope="row">Consultations booked by the agent in a six-day window, each checked against the calendar</th><td>13</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
+      <section class="chapter" id="results" aria-labelledby="results-title">
+        <h2 id="results-title">Results from the pilot</h2>
+        <p>All figures are measured in the live pilot. On a normal day SEDA handles around 300 agent runs for 100 to 160 different people. Here is one sample week, 1 to 7 September 2026:</p>
+        <table class="results">
+          <caption class="visually-hidden">Sample week, 1 to 7 September 2026</caption>
+          <tbody>
+            <tr><th scope="row">People who messaged the clinic</th><td>534</td></tr>
+            <tr><th scope="row">Messages received</th><td>3,133</td></tr>
+            <tr><th scope="row">Replies sent by the agent</th><td>1,210</td></tr>
+            <tr><th scope="row">Median reply time (90th percentile)</th><td>~20 s (~24 s)</td></tr>
+            <tr><th scope="row">Accuracy on price answers, in audits</th><td>99.2%</td></tr>
+            <tr><th scope="row">Conversations matched to the ad they came from</th><td>76%</td></tr>
+            <tr><th scope="row">Consultations booked by the agent in a six-day window, each checked against the calendar</th><td>13</td></tr>
+          </tbody>
+        </table>
+      </section>
 
-  <section class="section" id="phone-agent" aria-labelledby="phone-title">
-    <div class="wrap">
-      <h2 id="phone-title">The phone agent</h2>
-      <p>Alongside messaging, I built SEDA's phone agent. It answers incoming calls in Turkish, gives clinic information, checks availability, books and cancels appointments, takes messages and passes urgent cases to the clinic. It has been validated end to end with real test calls, but it isn't in production yet: the clinic's main line hasn't been routed to it, and we prioritised messaging for the pilot.</p>
+      <section class="chapter" id="phone" aria-labelledby="phone-title">
+        <h2 id="phone-title">The phone agent</h2>
+        <p>Alongside messaging, I built SEDA's phone agent. It answers incoming calls in Turkish, gives clinic information, checks availability, books and cancels appointments, takes messages and passes urgent cases to the clinic. It has been validated end to end with real test calls, but it isn't in production yet: the clinic's main line hasn't been routed to it, and we prioritised messaging for the pilot.</p>
 
-      <h3 class="subhead">How a call is handled</h3>
-      <ol class="steps">
-        <li><span class="num" aria-hidden="true">1</span><p>A call comes in over a SIP phone line (Verimor in Turkey, Telnyx in Ireland) to an agent built with Retell's Conversation Flow.</p></li>
-        <li><span class="num" aria-hidden="true">2</span><p>The agent works through a graph of nodes, so each stage of the call, from greeting to booking, cancelling or an urgent case, has explicit rules. Clinic information comes from a knowledge base, which deliberately contains no prices.</p></li>
-        <li><span class="num" aria-hidden="true">3</span><p>Each tool call goes to a webhook in Make, which identifies the clinic from the agent's ID and runs the calendar or CRM action.</p></li>
-        <li><span class="num" aria-hidden="true">4</span><p>The result goes back to the agent, which only confirms an action once the tool reports success.</p></li>
-        <li><span class="num" aria-hidden="true">5</span><p>After the call, an analysis step records the outcome and notifies the clinic.</p></li>
-      </ol>
-
-      <figure>
-        <div class="diagram">
-          <svg class="diagram-wide" viewBox="0 0 1000 340" role="img" aria-labelledby="phone-arch-title phone-arch-desc">
+        <h3>How a call is handled</h3>
+        <ol class="steps">
+          <li><span class="num" aria-hidden="true">1</span><p>A call comes in over a SIP phone line (Verimor in Turkey, Telnyx in Ireland) to an agent built with Retell's Conversation Flow.</p></li>
+          <li><span class="num" aria-hidden="true">2</span><p>The agent works through a graph of nodes, so each stage of the call, from greeting to booking, cancelling or an urgent case, has explicit rules. Clinic information comes from a knowledge base, which deliberately contains no prices.</p></li>
+          <li><span class="num" aria-hidden="true">3</span><p>Each tool call goes to a webhook in Make, which identifies the clinic from the agent's ID and runs the calendar or CRM action.</p></li>
+          <li><span class="num" aria-hidden="true">4</span><p>The result goes back to the agent, which only confirms an action once the tool reports success.</p></li>
+          <li><span class="num" aria-hidden="true">5</span><p>After the call, an analysis step records the outcome and notifies the clinic.</p></li>
+        </ol>
+        <figure>
+          <div class="diagram">
+            <svg class="diagram-wide" viewBox="0 0 1000 340" role="img" aria-labelledby="phone-arch-title phone-arch-desc">
             <title id="phone-arch-title">The phone agent's architecture</title>
             <desc id="phone-arch-desc">A call comes in over a SIP phone line (Verimor in Turkey, Telnyx in Ireland) to the Retell agent, built with Conversation Flow and a knowledge base that contains no prices. Each action goes to Make webhooks, which route by agent ID and reject requests without a clinic ID, then run the calendar and CRM action. The result goes back to the agent. After the call, a post-call analysis step leads to a clinic notification.</desc>
             <defs>
@@ -334,8 +358,7 @@
             <rect class="svg-box" x="440" y="260" width="200" height="60" rx="6"/>
             <text class="svg-title" x="456" y="296">Clinic notification</text>
           </svg>
-
-          <svg class="diagram-tall" viewBox="0 0 360 450" role="img" aria-labelledby="phone-arch-title-m phone-arch-desc-m">
+            <svg class="diagram-tall" viewBox="0 0 360 450" role="img" aria-labelledby="phone-arch-title-m phone-arch-desc-m">
             <title id="phone-arch-title-m">The phone agent's architecture</title>
             <desc id="phone-arch-desc-m">A call comes in over a SIP phone line (Verimor in Turkey, Telnyx in Ireland) to the Retell agent, built with Conversation Flow and a knowledge base that contains no prices. Each action goes to Make webhooks, which route by agent ID and reject requests without a clinic ID, then run the calendar and CRM action. The result goes back to the agent. After the call, a post-call analysis step leads to a clinic notification.</desc>
             <defs>
@@ -379,66 +402,68 @@
             <path class="svg-reply" d="M36,320 H18 V180 H34" marker-end="url(#pahm-accent)"/>
             <text class="svg-label-accent" transform="translate(12 250) rotate(-90)" text-anchor="middle">result</text>
           </svg>
+          </div>
+          <figcaption>The phone agent's architecture. Every action goes through Make, which knows which clinic the call belongs to.</figcaption>
+        </figure>
+
+        <h3>Safeguards</h3>
+        <p>Cancelling an appointment requires looking up the booking first, and ownership is checked against the caller's number. Requests that arrive without a clinic ID are rejected; we added this after one such request broke routing during testing. The agent never tells a caller that something is booked or cancelled until the tool confirms it.</p>
+
+        <h3>Three problems I solved</h3>
+        <div class="pairs">
+          <div>
+            <h4>A migration that was only half done</h4>
+            <p>Moving the data layer touched three places at once: the Make configuration, the database and the slot ID type in the flow. They fell out of sync, and a real test booking failed with a 409 conflict. I wrote a three-layer migration checklist and made slot IDs opaque strings everywhere.</p>
+          </div>
+          <div>
+            <h4>Two formats for one phone number</h4>
+            <p>Cancellations failed the ownership check because one system stored numbers starting with 0 and another with +90. Normalising both to the last ten digits fixed it, which a test call confirmed.</p>
+          </div>
+          <div>
+            <h4>A conversation with no way out</h4>
+            <p>One agent tried to book without checking availability first, and the flow got stuck. I added a recovery path for failed bookings and a loop guard, and it then passed 4 of 4 simulations.</p>
+          </div>
         </div>
-        <figcaption>The phone agent's architecture. Every action goes through Make, which knows which clinic the call belongs to.</figcaption>
-      </figure>
 
-      <h3 class="subhead">Safeguards</h3>
-      <p>Cancelling an appointment requires looking up the booking first, and ownership is checked against the caller's number. Requests that arrive without a clinic ID are rejected; we added this after one such request broke routing during testing. The agent never tells a caller that something is booked or cancelled until the tool confirms it.</p>
+        <h3>How I tested it</h3>
+        <p>Real test calls end to end: information, availability and booking on 4 July 2026, and cancellation on 6 July. On top of that, an 11-scenario notification matrix, a 9-scenario simulation set in Turkish, and a daily reconciliation check in Make. We don't have production call metrics yet because the agent hasn't taken real calls.</p>
+        <p>To show the system in English, I also set up a fictional Dublin clinic as a demo on an Irish phone line.</p>
+        <p class="note">Retell AI (Conversation Flow), Make, Verimor and Telnyx SIP lines, GoHighLevel calendar, WhatsApp notifications.</p>
+      </section>
 
-      <h3 class="subhead">Three problems I solved</h3>
-      <div class="three">
-        <div>
-          <h4>A migration that was only half done</h4>
-          <p>Moving the data layer touched three places at once: the Make configuration, the database and the slot ID type in the flow. They fell out of sync, and a real test booking failed with a 409 conflict. I wrote a three-layer migration checklist and made slot IDs opaque strings everywhere.</p>
+      <section class="chapter" id="role" aria-labelledby="role-title">
+        <h2 id="role-title">My role</h2>
+        <p>I'm the product owner. I built the FastAPI backend and designed how the agent behaves: its rules and prompts, the knowledge base and pricing, the gates, and the test and release discipline. I set up the GoHighLevel, Meta and WhatsApp Business integrations, run the relationship with the clinic, and lead our production fixes.</p>
+        <p>I designed and built the phone agent myself: the conversation flows, the knowledge base, the Make scenarios, the phone line setup and the test plan.</p>
+      </section>
+
+      <section class="chapter" id="next" aria-labelledby="next-title">
+        <h2 id="next-title">What's next</h2>
+        <p>Onboarding a second clinic, moving the phone agent onto the same backend, measuring conversion and no-show rates properly, and adding alerts for silent failures.</p>
+        <div class="code-cta">
+          <p><strong>seda-chat-router</strong>The production code is private because it contains client configuration; a cleaned showcase version is on <a href="https://github.com/sahintekten/seda-chat-router">GitHub</a>.</p>
+          <a class="btn btn-primary" href="https://github.com/sahintekten/seda-chat-router">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 7-5 5 5 5M16 7l5 5-5 5"/></svg>
+            View the code
+          </a>
         </div>
-        <div>
-          <h4>Two formats for one phone number</h4>
-          <p>Cancellations failed the ownership check because one system stored numbers starting with 0 and another with +90. Normalising both to the last ten digits fixed it, which a test call confirmed.</p>
+        <p class="note">This page contains no patient data, and the clinic is not named.</p>
+        <div class="actions">
+          <a class="btn" href="mailto:sahin.tekten@ucdconnect.ie">Email me</a>
+          <a class="btn" href="https://www.linkedin.com/in/sahintekten">LinkedIn</a>
+          <a class="btn" href="https://github.com/sahintekten">GitHub</a>
         </div>
-        <div>
-          <h4>A conversation with no way out</h4>
-          <p>One agent tried to book without checking availability first, and the flow got stuck. I added a recovery path for failed bookings and a loop guard, and it then passed 4 of 4 simulations.</p>
-        </div>
-      </div>
-
-      <h3 class="subhead">How I tested it</h3>
-      <p>Real test calls end to end: information, availability and booking on 4 July 2026, and cancellation on 6 July. On top of that, an 11-scenario notification matrix, a 9-scenario simulation set in Turkish, and a daily reconciliation check in Make. We don't have production call metrics yet because the agent hasn't taken real calls.</p>
-      <p>To show the system in English, I also set up a fictional Dublin clinic as a demo on an Irish phone line.</p>
-      <p class="muted">Retell AI (Conversation Flow), Make, Verimor and Telnyx SIP lines, GoHighLevel calendar, WhatsApp notifications.</p>
+      </section>
     </div>
-  </section>
-
-  <section class="section prose" aria-labelledby="role-title">
-    <div class="wrap">
-      <h2 id="role-title">My role</h2>
-      <p>I'm the product owner and designed how the agent behaves: its rules and prompts, the knowledge base and pricing, the gates, and the test and release discipline. I set up the GoHighLevel, Meta and WhatsApp Business integrations, run the relationship with the clinic, and lead our production fixes.</p>
-      <p>I designed and built the phone agent myself: the conversation flows, the knowledge base, the Make scenarios, the phone line setup and the test plan.</p>
-      <p>I built the FastAPI backend, directing much of the work through Claude Code: I write detailed task briefs for it to implement, test and deploy, and I review what it ships against the served version.</p>
-    </div>
-  </section>
-
-  <section class="section prose" aria-labelledby="differently-title">
-    <div class="wrap">
-      <h2 id="differently-title">What I'd do differently</h2>
-      <p>We never measured how fast staff replied before the agent went live, so we can report the agent's reply time but not the improvement. Next time I'd capture a baseline first.</p>
-      <p>I'd also build alerts for silent failures from day one. When an upstream service stops responding, the bot goes quiet by design, which is safe, but someone needs to know about it straight away.</p>
-    </div>
-  </section>
-
-  <section class="section prose" aria-labelledby="next-title">
-    <div class="wrap">
-      <h2 id="next-title">What's next</h2>
-      <p>Onboarding a second clinic, moving the phone agent onto the same backend, measuring conversion and no-show rates properly, and adding alerts for silent failures.</p>
-      <p class="small muted">This page contains no patient data, and the clinic is not named. The production code is private because it contains client configuration; a cleaned showcase version is on <a href="https://github.com/sahintekten/seda-chat-router">GitHub</a>.</p>
-      <div class="actions">
-        <a class="btn btn-primary" href="mailto:sahin.tekten@ucdconnect.ie">Email me</a>
-        <a class="btn" href="https://www.linkedin.com/in/sahintekten">LinkedIn</a>
-        <a class="btn" href="https://github.com/sahintekten">GitHub</a>
-      </div>
-    </div>
-  </section>
+  </div>
 
 </main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>Sahin Tekten</p>
+    <p><a href="/">Back to home</a></p>
+  </div>
+</footer>
 </body>
 </html>

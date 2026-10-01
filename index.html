@@ -6,9 +6,11 @@
 <title>Sahin Tekten: AI agents that behave in production</title>
 <meta name="description" content="I'm a final-year Computer Science student at University College Dublin. For the past year I've co-founded SEDA, an AI receptionist that answers clinic enquiries on WhatsApp, Instagram and Messenger.">
 <meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#F5F1EA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#161512" media="(prefers-color-scheme: dark)">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Schibsted+Grotesk:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500&display=swap">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body id="top">
@@ -16,11 +18,11 @@
 
 <header class="site-header">
   <div class="wrap">
-    <a class="home" href="#top">Sahin Tekten</a>
-    <nav aria-label="Main">
+    <a class="wordmark" href="#top">Sahin Tekten</a>
+    <nav class="site-nav" aria-label="Main">
       <ul>
         <li><a href="ai-receptionist.html">Case study</a></li>
-        <li><a href="#other-work">Other work</a></li>
+        <li><a href="#work">Other work</a></li>
         <li><a href="#experience">Experience</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
@@ -31,64 +33,79 @@
 <main id="main" tabindex="-1">
 
   <section class="hero" aria-labelledby="hero-title">
-    <div class="wrap split">
+    <div class="wrap hero-grid">
       <div>
+        <p class="status">Graduating May 2027. Looking for graduate roles in software engineering, AI and data in Ireland.</p>
         <h1 id="hero-title">I build AI agents that know when to stay quiet.</h1>
         <p class="lead">I'm a final-year Computer Science student at University College Dublin. For the past year I've co-founded SEDA, an AI receptionist that answers clinic enquiries on WhatsApp, Instagram and Messenger.</p>
         <div class="actions">
           <a class="btn btn-primary" href="ai-receptionist.html">Read the case study</a>
-          <a class="btn" href="https://github.com/sahintekten">GitHub</a>
-          <a class="btn" href="https://www.linkedin.com/in/sahintekten">LinkedIn</a>
+          <a class="btn" href="https://github.com/sahintekten/seda-chat-router">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 7-5 5 5 5M16 7l5 5-5 5"/></svg>
+            View the code
+          </a>
+          <span class="text-links">
+            <a href="https://github.com/sahintekten">GitHub</a>
+            <a href="https://www.linkedin.com/in/sahintekten">LinkedIn</a>
+          </span>
         </div>
-        <p class="note">Graduating May 2027. Looking for graduate roles in software engineering, AI and data in Ireland.</p>
       </div>
 
       <div class="trace" role="group" aria-labelledby="trace-title">
         <h2 id="trace-title">How one message moves through SEDA (simplified)</h2>
         <ol>
-          <li><span class="step">received</span><span class="desc">WhatsApp message from an ad</span></li>
-          <li><span class="step">merge</span><span class="desc">three quick messages into one turn</span></li>
-          <li class="gate"><span class="step">gate</span><span class="desc">staff has not taken over <span class="result">pass</span></span></li>
-          <li class="gate"><span class="step">gate</span><span class="desc">channel and page allowed <span class="result">pass</span></span></li>
-          <li><span class="step">context</span><span class="desc">matched to the campaign it came from</span></li>
-          <li class="agent"><span class="step">agent</span><span class="desc">check_availability() <span class="result">3 slots</span></span></li>
-          <li class="agent"><span class="step">agent</span><span class="desc">create_booking() <span class="result">confirmed</span></span></li>
-          <li class="reply"><span class="step">reply</span><span class="desc">sent to the person<span class="foot">Median reply time in the pilot: about 20 seconds</span></span></li>
+          <li><span class="step">received</span><span>WhatsApp message from an ad</span></li>
+          <li><span class="step">merge</span><span>three quick messages into one turn</span></li>
+          <li class="gate"><span class="step">gate</span><span>staff has not taken over<span class="result">pass</span></span></li>
+          <li class="gate"><span class="step">gate</span><span>channel and page allowed<span class="result">pass</span></span></li>
+          <li><span class="step">context</span><span>matched to the campaign it came from</span></li>
+          <li class="agent"><span class="step">agent</span><span>check_availability()<span class="result">3 slots</span></span></li>
+          <li class="agent"><span class="step">agent</span><span>create_booking()<span class="result">confirmed</span></span></li>
+          <li class="reply"><span class="step">reply</span><span>sent to the person<span class="foot">Median reply time in the pilot: about 20 seconds</span></span></li>
         </ol>
       </div>
     </div>
   </section>
 
+  <section class="proof" aria-labelledby="proof-title">
+    <div class="wrap">
+      <h2 id="proof-title" class="visually-hidden">SEDA in the live pilot</h2>
+      <dl>
+        <div><dt>Conversations handled a day</dt><dd>~300</dd></div>
+        <div><dt>Unique people a day</dt><dd>100–160</dd></div>
+        <div><dt>Median reply time</dt><dd>~20 s</dd></div>
+        <div><dt>Accuracy on price answers, audited</dt><dd>99.2%</dd></div>
+        <div><dt>Automated tests</dt><dd>267</dd></div>
+      </dl>
+      <p class="proof-note">All figures measured in the live pilot.</p>
+    </div>
+  </section>
+
   <section class="section" id="seda" aria-labelledby="seda-title">
-    <div class="wrap split">
+    <div class="wrap section-head">
       <div>
         <h2 id="seda-title">SEDA, an AI receptionist for clinics</h2>
-        <p class="sub">Co-founder and product lead, January 2026 to present</p>
-        <p>Clinics advertise on Instagram and Facebook, and the ads bring in more messages than staff can answer quickly. SEDA answers them, qualifies each person and books a free consultation, and hands the conversation to staff the moment they step in. It has been piloted with a cosmetic surgery clinic in Istanbul since July 2026.</p>
-        <p>I designed how the agent behaves: its prompts and knowledge base, and the safety gates that decide when it must stay silent. I also set up the testing and release discipline and led our production fixes. I built the backend in Python with FastAPI, directing much of the work through Claude Code.</p>
-        <p>I also built the phone agent, which answers calls, books and cancels appointments, and has been tested end to end with real calls ahead of its release.</p>
-        <p class="muted">FastAPI, PostgreSQL, Docker, Retell AI, GoHighLevel and the Meta APIs.</p>
-        <div class="actions">
-          <a class="btn" href="ai-receptionist.html">Read how it works</a>
-          <a class="btn" href="https://github.com/sahintekten/seda-chat-router">View the code</a>
-        </div>
+        <p class="kicker">Co-founder and product lead, January 2026 to present</p>
       </div>
-      <div>
-        <dl class="figures">
-          <div><dt>Conversations handled a day</dt><dd>~300</dd></div>
-          <div><dt>Unique people a day</dt><dd>100–160</dd></div>
-          <div><dt>Median reply time</dt><dd>~20 s</dd></div>
-          <div><dt>Accuracy on price answers, audited</dt><dd>99.2%</dd></div>
-          <div><dt>Automated tests</dt><dd>267</dd></div>
-        </dl>
-        <p class="small muted">All figures measured in the live pilot.</p>
+      <div class="seda-body">
+        <p>Clinics advertise on Instagram and Facebook, and the ads bring in more messages than staff can answer quickly. SEDA answers them, qualifies each person and books a free consultation, and hands the conversation to staff the moment they step in. It has been piloted with a cosmetic surgery clinic in Istanbul since July 2026.</p>
+        <p>I designed how the agent behaves: its prompts and knowledge base, and the safety gates that decide when it must stay silent. I also set up the testing and release discipline and led our production fixes. I built the backend in Python with FastAPI.</p>
+        <p>I also built the phone agent, which answers calls, books and cancels appointments, and has been tested end to end with real calls ahead of its release.</p>
+        <p class="stack">FastAPI, PostgreSQL, Docker, Retell AI, GoHighLevel and the Meta APIs.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="ai-receptionist.html">Read how it works</a>
+          <a class="btn" href="https://github.com/sahintekten/seda-chat-router">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 7-5 5 5 5M16 7l5 5-5 5"/></svg>
+            View the code
+          </a>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="section" id="other-work" aria-labelledby="other-title">
+  <section class="section" id="work" aria-labelledby="work-title">
     <div class="wrap">
-      <h2 id="other-title">Other work</h2>
+      <h2 id="work-title">Other work</h2>
       <ul class="rows">
         <li>
           <div class="meta"><span>Coca-Cola, Istanbul</span><span>Dec 2025 to Jan 2026</span></div>
@@ -185,12 +202,12 @@
     </div>
   </section>
 
-  <section class="section" id="contact" aria-labelledby="contact-title">
+  <section class="section contact" id="contact" aria-labelledby="contact-title">
     <div class="wrap">
       <h2 id="contact-title">Get in touch</h2>
       <p>The quickest way to reach me is email.</p>
+      <p><a class="email" href="mailto:sahin.tekten@ucdconnect.ie">sahin.tekten@ucdconnect.ie</a></p>
       <div class="actions">
-        <a class="btn btn-primary" href="mailto:sahin.tekten@ucdconnect.ie">sahin.tekten@ucdconnect.ie</a>
         <a class="btn" href="https://www.linkedin.com/in/sahintekten">LinkedIn</a>
         <a class="btn" href="https://github.com/sahintekten">GitHub</a>
       </div>
@@ -198,5 +215,12 @@
   </section>
 
 </main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>Sahin Tekten</p>
+    <p><a href="https://github.com/sahintekten/seda-chat-router">View the SEDA code on GitHub</a></p>
+  </div>
+</footer>
 </body>
 </html>
