@@ -211,7 +211,7 @@
       <p>The most important design decision was to enforce the agent's boundaries in code, not only in its prompt. A prompt can be misread; a gate can't. Before the agent sees a message, the router checks whether a staff member has taken over the conversation, and whether this channel and page are enabled for the bot. If any check fails or anything is unclear, the system stays silent. We call this failing closed.</p>
       <p>A few operating rules back this up. A dry-run switch lets us test changes without sending anything. We never simulate conversations against the live clinic. And we treat "published" and "live" as different things: after every prompt release we check the version that is actually being served.</p>
       <div class="callout">
-        <p>We test the gates by breaking them. Mutation tests remove a gate on purpose and check that the test suite fails. If the tests still pass without the gate, the tests aren't good enough. There are 267 automated tests in total.</p>
+        <p>We test the gates by breaking them. A mutation check script removes each of the 10 safety gates in turn, and the test suite has to fail every time; it does, 10 out of 10. If the tests still pass without a gate, the tests aren't good enough. Separately, there are 267 automated tests.</p>
       </div>
     </div>
   </section>
@@ -414,7 +414,7 @@
       <h2 id="role-title">My role</h2>
       <p>I'm the product owner and designed how the agent behaves: its rules and prompts, the knowledge base and pricing, the gates, and the test and release discipline. I set up the GoHighLevel, Meta and WhatsApp Business integrations, run the relationship with the clinic, and lead our production fixes.</p>
       <p>I designed and built the phone agent myself: the conversation flows, the knowledge base, the Make scenarios, the phone line setup and the test plan.</p>
-      <p>My co-founder owns the FastAPI backend. I direct a large share of development through Claude Code, writing detailed task briefs for it to implement, test and deploy, and I review what it ships against the served version.</p>
+      <p>I built the FastAPI backend, directing much of the work through Claude Code: I write detailed task briefs for it to implement, test and deploy, and I review what it ships against the served version.</p>
     </div>
   </section>
 
@@ -430,7 +430,7 @@
     <div class="wrap">
       <h2 id="next-title">What's next</h2>
       <p>Onboarding a second clinic, moving the phone agent onto the same backend, measuring conversion and no-show rates properly, and adding alerts for silent failures.</p>
-      <p class="small muted">This page contains no patient data, and the clinic is not named. Code is private because it contains client configuration.</p>
+      <p class="small muted">This page contains no patient data, and the clinic is not named. The production code is private because it contains client configuration; a cleaned showcase version is on <a href="https://github.com/sahintekten/seda-chat-router">GitHub</a>.</p>
       <div class="actions">
         <a class="btn btn-primary" href="mailto:sahin.tekten@ucdconnect.ie">Email me</a>
         <a class="btn" href="https://www.linkedin.com/in/sahintekten">LinkedIn</a>
