@@ -35,7 +35,7 @@
   <section class="case-hero" aria-labelledby="case-title">
     <div class="wrap">
       <h1 id="case-title">An AI receptionist that knows when to stay quiet</h1>
-      <p class="lede">SEDA answers clinic enquiries on WhatsApp, Instagram and Messenger, qualifies each person and books a free consultation. It has been piloted with a cosmetic surgery clinic in Istanbul since July 2026. This page explains how it works, the problems we hit in production and what the numbers say.</p>
+      <p class="lede">SEDA answers clinic enquiries on WhatsApp, Instagram and Messenger, qualifies each person and books a free consultation. It has been piloted with a cosmetic surgery clinic in Istanbul since July 2026. This page explains how it works, the problems we hit in production and what the numbers say. It also includes a phone agent that I built and tested end to end, which isn't in production yet.</p>
       <dl class="summary">
         <div><dt>My role</dt><dd>Co-founder, product lead</dd></div>
         <div><dt>Team</dt><dd>Two co-founders</dd></div>
@@ -275,10 +275,145 @@
     </div>
   </section>
 
+  <section class="section" id="phone-agent" aria-labelledby="phone-title">
+    <div class="wrap">
+      <h2 id="phone-title">The phone agent</h2>
+      <p>Alongside messaging, I built SEDA's phone agent. It answers incoming calls in Turkish, gives clinic information, checks availability, books and cancels appointments, takes messages and passes urgent cases to the clinic. It has been validated end to end with real test calls, but it isn't in production yet: the clinic's main line hasn't been routed to it, and we prioritised messaging for the pilot.</p>
+
+      <h3 class="subhead">How a call is handled</h3>
+      <ol class="steps">
+        <li><span class="num" aria-hidden="true">1</span><p>A call comes in over a SIP phone line (Verimor in Turkey, Telnyx in Ireland) to an agent built with Retell's Conversation Flow.</p></li>
+        <li><span class="num" aria-hidden="true">2</span><p>The agent works through a graph of nodes, so each stage of the call, from greeting to booking, cancelling or an urgent case, has explicit rules. Clinic information comes from a knowledge base, which deliberately contains no prices.</p></li>
+        <li><span class="num" aria-hidden="true">3</span><p>Each tool call goes to a webhook in Make, which identifies the clinic from the agent's ID and runs the calendar or CRM action.</p></li>
+        <li><span class="num" aria-hidden="true">4</span><p>The result goes back to the agent, which only confirms an action once the tool reports success.</p></li>
+        <li><span class="num" aria-hidden="true">5</span><p>After the call, an analysis step records the outcome and notifies the clinic.</p></li>
+      </ol>
+
+      <figure>
+        <div class="diagram">
+          <svg class="diagram-wide" viewBox="0 0 1000 340" role="img" aria-labelledby="phone-arch-title phone-arch-desc">
+            <title id="phone-arch-title">The phone agent's architecture</title>
+            <desc id="phone-arch-desc">A call comes in over a SIP phone line (Verimor in Turkey, Telnyx in Ireland) to the Retell agent, built with Conversation Flow and a knowledge base that contains no prices. Each action goes to Make webhooks, which route by agent ID and reject requests without a clinic ID, then run the calendar and CRM action. The result goes back to the agent. After the call, a post-call analysis step leads to a clinic notification.</desc>
+            <defs>
+              <marker id="pah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="svg-head" d="M0,0 L10,5 L0,10 z"/></marker>
+              <marker id="pah-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="svg-head-accent" d="M0,0 L10,5 L0,10 z"/></marker>
+            </defs>
+
+            <rect class="svg-box" x="10" y="50" width="150" height="100" rx="6"/>
+            <text class="svg-title" x="24" y="78">SIP line</text>
+            <text class="svg-text" x="24" y="102">Verimor TR</text>
+            <text class="svg-text" x="24" y="124">Telnyx IE</text>
+
+            <rect class="svg-box-accent" x="210" y="40" width="180" height="120" rx="6"/>
+            <text class="svg-title" x="224" y="68">Retell agent</text>
+            <text class="svg-text" x="224" y="92">Conversation Flow</text>
+            <text class="svg-text" x="224" y="114">Knowledge base,</text>
+            <text class="svg-text" x="224" y="136">no prices</text>
+
+            <rect class="svg-box" x="440" y="20" width="250" height="160" rx="6"/>
+            <text class="svg-title" x="455" y="48">Make webhooks</text>
+            <rect class="svg-box-gate" x="455" y="64" width="220" height="98" rx="4"/>
+            <text class="svg-gate-text" x="468" y="90">Route by agent ID</text>
+            <text class="svg-gate-text" x="468" y="118">Reject requests without</text>
+            <text class="svg-gate-text" x="468" y="140">a clinic ID</text>
+
+            <rect class="svg-box" x="740" y="65" width="180" height="70" rx="6"/>
+            <text class="svg-title" x="756" y="106">Calendar and CRM</text>
+
+            <line class="svg-arrow" x1="160" y1="100" x2="208" y2="100" marker-end="url(#pah)"/>
+            <line class="svg-arrow" x1="390" y1="100" x2="438" y2="100" marker-end="url(#pah)"/>
+            <line class="svg-arrow" x1="690" y1="100" x2="738" y2="100" marker-end="url(#pah)"/>
+
+            <path class="svg-reply" d="M600,180 V222 H340 V162" marker-end="url(#pah-accent)"/>
+            <text class="svg-label-accent" x="470" y="214" text-anchor="middle">result</text>
+
+            <line class="svg-arrow" x1="270" y1="160" x2="270" y2="258" marker-end="url(#pah)"/>
+            <rect class="svg-box" x="190" y="260" width="200" height="60" rx="6"/>
+            <text class="svg-title" x="206" y="296">Post-call analysis</text>
+            <line class="svg-arrow" x1="390" y1="290" x2="438" y2="290" marker-end="url(#pah)"/>
+            <rect class="svg-box" x="440" y="260" width="200" height="60" rx="6"/>
+            <text class="svg-title" x="456" y="296">Clinic notification</text>
+          </svg>
+
+          <svg class="diagram-tall" viewBox="0 0 360 450" role="img" aria-labelledby="phone-arch-title-m phone-arch-desc-m">
+            <title id="phone-arch-title-m">The phone agent's architecture</title>
+            <desc id="phone-arch-desc-m">A call comes in over a SIP phone line (Verimor in Turkey, Telnyx in Ireland) to the Retell agent, built with Conversation Flow and a knowledge base that contains no prices. Each action goes to Make webhooks, which route by agent ID and reject requests without a clinic ID, then run the calendar and CRM action. The result goes back to the agent. After the call, a post-call analysis step leads to a clinic notification.</desc>
+            <defs>
+              <marker id="pahm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="svg-head" d="M0,0 L10,5 L0,10 z"/></marker>
+              <marker id="pahm-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="svg-head-accent" d="M0,0 L10,5 L0,10 z"/></marker>
+            </defs>
+
+            <rect class="svg-box" x="36" y="10" width="190" height="80" rx="6"/>
+            <text class="svg-title" x="50" y="34">SIP line</text>
+            <text class="svg-text" x="50" y="54">Verimor TR</text>
+            <text class="svg-text" x="50" y="71">Telnyx IE</text>
+            <line class="svg-arrow" x1="131" y1="90" x2="131" y2="118" marker-end="url(#pahm)"/>
+
+            <rect class="svg-box-accent" x="36" y="120" width="190" height="92" rx="6"/>
+            <text class="svg-title" x="50" y="144">Retell agent</text>
+            <text class="svg-text" x="50" y="164">Conversation Flow</text>
+            <text class="svg-text" x="50" y="181">Knowledge base,</text>
+            <text class="svg-text" x="50" y="198">no prices</text>
+
+            <line class="svg-arrow" x1="226" y1="166" x2="246" y2="166" marker-end="url(#pahm)"/>
+            <rect class="svg-box" x="248" y="138" width="108" height="56" rx="6"/>
+            <text class="svg-title" x="258" y="160">Post-call</text>
+            <text class="svg-title" x="258" y="178">analysis</text>
+            <line class="svg-arrow" x1="302" y1="194" x2="302" y2="246" marker-end="url(#pahm)"/>
+            <rect class="svg-box" x="248" y="248" width="108" height="56" rx="6"/>
+            <text class="svg-title" x="258" y="270">Clinic</text>
+            <text class="svg-title" x="258" y="288">notification</text>
+
+            <line class="svg-arrow" x1="131" y1="212" x2="131" y2="240" marker-end="url(#pahm)"/>
+            <rect class="svg-box" x="36" y="242" width="190" height="124" rx="6"/>
+            <text class="svg-title" x="50" y="266">Make webhooks</text>
+            <rect class="svg-box-gate" x="50" y="280" width="162" height="72" rx="4"/>
+            <text class="svg-gate-text" x="60" y="300">Route by agent ID</text>
+            <text class="svg-gate-text" x="60" y="320">Reject requests</text>
+            <text class="svg-gate-text" x="60" y="337">without a clinic ID</text>
+
+            <line class="svg-arrow" x1="131" y1="366" x2="131" y2="394" marker-end="url(#pahm)"/>
+            <rect class="svg-box" x="36" y="396" width="190" height="46" rx="6"/>
+            <text class="svg-title" x="50" y="424">Calendar and CRM</text>
+
+            <path class="svg-reply" d="M36,320 H18 V180 H34" marker-end="url(#pahm-accent)"/>
+            <text class="svg-label-accent" transform="translate(12 250) rotate(-90)" text-anchor="middle">result</text>
+          </svg>
+        </div>
+        <figcaption>The phone agent's architecture. Every action goes through Make, which knows which clinic the call belongs to.</figcaption>
+      </figure>
+
+      <h3 class="subhead">Safeguards</h3>
+      <p>Cancelling an appointment requires looking up the booking first, and ownership is checked against the caller's number. Requests that arrive without a clinic ID are rejected; we added this after one such request broke routing during testing. The agent never tells a caller that something is booked or cancelled until the tool confirms it.</p>
+
+      <h3 class="subhead">Three problems I solved</h3>
+      <div class="three">
+        <div>
+          <h4>A migration that was only half done</h4>
+          <p>Moving the data layer touched three places at once: the Make configuration, the database and the slot ID type in the flow. They fell out of sync, and a real test booking failed with a 409 conflict. I wrote a three-layer migration checklist and made slot IDs opaque strings everywhere.</p>
+        </div>
+        <div>
+          <h4>Two formats for one phone number</h4>
+          <p>Cancellations failed the ownership check because one system stored numbers starting with 0 and another with +90. Normalising both to the last ten digits fixed it, which a test call confirmed.</p>
+        </div>
+        <div>
+          <h4>A conversation with no way out</h4>
+          <p>One agent tried to book without checking availability first, and the flow got stuck. I added a recovery path for failed bookings and a loop guard, and it then passed 4 of 4 simulations.</p>
+        </div>
+      </div>
+
+      <h3 class="subhead">How I tested it</h3>
+      <p>Real test calls end to end: information, availability and booking on 4 July 2026, and cancellation on 6 July. On top of that, an 11-scenario notification matrix, a 9-scenario simulation set in Turkish, and a daily reconciliation check in Make. We don't have production call metrics yet because the agent hasn't taken real calls.</p>
+      <p>To show the system in English, I also set up a fictional Dublin clinic as a demo on an Irish phone line.</p>
+      <p class="muted">Retell AI (Conversation Flow), Make, Verimor and Telnyx SIP lines, GoHighLevel calendar, WhatsApp notifications.</p>
+    </div>
+  </section>
+
   <section class="section prose" aria-labelledby="role-title">
     <div class="wrap">
       <h2 id="role-title">My role</h2>
       <p>I'm the product owner and designed how the agent behaves: its rules and prompts, the knowledge base and pricing, the gates, and the test and release discipline. I set up the GoHighLevel, Meta and WhatsApp Business integrations, run the relationship with the clinic, and lead our production fixes.</p>
+      <p>I designed and built the phone agent myself: the conversation flows, the knowledge base, the Make scenarios, the phone line setup and the test plan.</p>
       <p>My co-founder owns the FastAPI backend. I direct a large share of development through Claude Code, writing detailed task briefs for it to implement, test and deploy, and I review what it ships against the served version.</p>
     </div>
   </section>

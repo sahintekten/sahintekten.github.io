@@ -384,6 +384,10 @@ figcaption { margin-top: 0.8rem; color: var(--muted); font-size: 0.92rem; max-wi
 }
 .three > div { border-top: 1px solid var(--line); padding-top: 1rem; }
 .three p { margin: 0; }
+.three h4 { font-size: 1.05rem; line-height: 1.25; margin: 0 0 0.6em; }
+
+.subhead { font-size: 1.35rem; margin-top: 3rem; }
+.section .steps + figure { margin-top: 2rem; }
 
 .results {
   width: 100%;
