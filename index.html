@@ -1,133 +1,228 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sahin Tekten: AI agents that know when to stay quiet</title>
-<meta name="description" content="Co-founder of SEDA, an AI receptionist that answers clinic enquiries on WhatsApp, Instagram and Messenger and books consultations.">
-<meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#FAFAF9" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0D0F0E" media="(prefers-color-scheme: dark)">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sahin Tekten</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<body>
 
-<header class="site-header">
-  <div class="wrap">
-    <a class="wordmark" href="#top">Sahin Tekten</a>
-    <nav class="site-nav" aria-label="Main">
-      <ul>
-        <li><a href="/ai-receptionist.html">Case study</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-    </nav>
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="#top">Sahin Tekten</a>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#experience">Experience</a>
+      <a href="#projects">Projects</a>
+      <a href="#education">Education</a>
+      <a href="#skills">Skills</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap hero-inner">
+    <div class="hero-text">
+      <p class="kicker">Founder &amp; Engineer · Dublin</p>
+      <h1>Sahin<br><em>Tekten.</em></h1>
+      <p class="headline">I build things <em>people</em> use</p>
+      <p class="lede">Final-year Computer Science student at UCD and founder of SEDA, an AI receptionist for clinics. Looking for graduate roles in Ireland from September 2027.</p>
+      <div class="actions">
+        <a class="btn btn-dark" href="https://github.com/sahintekten">GitHub</a>
+        <a class="btn btn-dark" href="https://linkedin.com/in/sahintekten">LinkedIn</a>
+        <a class="btn btn-outline" href="mailto:sahin.tekten@ucdconnect.ie">Email</a>
+      </div>
+    </div>
+    <div class="hero-photo"><img src="assets/photo.jpg" alt="Sahin Tekten"></div>
   </div>
 </header>
 
-<main id="main" tabindex="-1">
+<main>
 
-  <section class="hero" aria-labelledby="hero-title">
-    <div class="wrap hero-grid">
-      <div class="hero-copy">
-        <p class="status">Final-year Computer Science at UCD, graduating May 2027. Open to graduate roles in Ireland.</p>
-        <h1 id="hero-title">I build AI agents that know when to stay quiet.</h1>
-        <p class="lead">Co-founder of SEDA, an AI receptionist that answers clinic enquiries on WhatsApp, Instagram and Messenger and books consultations. In pilot with a clinic in Istanbul since July 2026.</p>
-        <div class="actions">
-          <a class="btn btn-primary" href="ai-receptionist.html">Read the case study</a>
-          <a class="btn" href="https://github.com/sahintekten/seda-chat-router"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 7-5 5 5 5M16 7l5 5-5 5"/></svg>View the code</a>
-        </div>
+  <section class="section" id="about">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-num">01 / About</span>
+        <h2 class="section-title">A bit<br><em>about me.</em></h2>
       </div>
-      <figure class="chat">
-        <div class="chat-window">
-          <div class="chat-head"><span class="chat-avatar" aria-hidden="true">S</span><span class="chat-name">SEDA<span class="chat-channel">Instagram DM</span></span></div>
-          <ol class="chat-log">
-            <li class="msg msg-person"><span class="who">Person</span><div class="tr" lang="tr"><p>Hic farketmez ztn [konum detayı çıkarıldı] kac derseniz uygunum ben</p></div><p class="en">It doesn&#x27;t matter, [location detail removed], I&#x27;m available whenever you say.</p><time datetime="12:13:45">12:13:45</time></li>
-            <li class="msg msg-seda"><span class="who">SEDA</span><div class="tr" lang="tr"><p>Tabii efendim, Pazartesi için uygun saatlerimiz var.</p><p>Sabah: 10:00, 10:30, 11:00<br>Öğleden sonra: 14:15, 14:30, 14:45<br>Akşamüstü: 16:00, 16:30, 17:00</p><p>Başka saatlerimiz de mevcut; size en uygun saati yazmanız yeterli.</p></div><p class="en">Of course. We have openings on Monday.<br>Morning: 10:00, 10:30, 11:00<br>Afternoon: 14:15, 14:30, 14:45<br>Early evening: 16:00, 16:30, 17:00<br>Other times are also available; just tell me which suits you best.</p><time datetime="12:13:49">12:13:49</time></li>
-            <li class="chat-gap">2 messages omitted: small talk unrelated to the booking</li>
-            <li class="msg msg-person"><span class="who">Person</span><div class="tr" lang="tr"><p>11 diyelim</p></div><p class="en">Let&#x27;s say 11.</p><time datetime="12:15:03">12:15:03</time></li>
-            <li class="msg msg-seda"><span class="who">SEDA</span><div class="tr" lang="tr"><p>Harika efendim. Randevunuzu oluşturabilmem için ad soyadınızı ve telefon numaranızı yazar mısınız?</p></div><p class="en">Great. Could you share your full name and phone number so I can create your appointment?</p><time datetime="12:15:05">12:15:05</time></li>
-            <li class="msg msg-person"><span class="who">Person</span><div class="tr" lang="tr"><p>Tabi [Ad Soyad] [telefon]</p></div><p class="en">Sure, [Full name] [phone]</p><time datetime="12:15:38">12:15:38</time></li>
-            <li class="msg msg-seda"><span class="who">SEDA</span><div class="tr" lang="tr"><p>📅 Pazartesi<br>⏰ 11:00<br>📞 [telefon]</p><p>[Ad Soyad] adına kaydınızı oluşturuyorum, onaylıyor musunuz?</p></div><p class="en">📅 Monday · ⏰ 11:00 · 📞 [phone]<br>I&#x27;m creating the booking under [Full name]. Do you confirm?</p><time datetime="12:15:48">12:15:48</time></li>
-            <li class="msg msg-person"><span class="who">Person</span><div class="tr" lang="tr"><p>Onaylıyorum tabi kii</p></div><p class="en">Of course, I confirm.</p><time datetime="12:16:17">12:16:17</time></li>
-            <li class="msg msg-seda"><span class="who">SEDA</span><div class="tr" lang="tr"><p>Randevunuz Pazartesi saat 11:00 için oluşturuldu efendim.</p><p>İyi günler efendim!</p></div><p class="en">Your appointment has been booked for Monday at 11:00.<br>Have a nice day!</p><time datetime="12:16:23">12:16:23</time></li>
-          </ol>
-        </div>
-        <figcaption>Real conversation from the pilot. Names and details changed.</figcaption>
-      </figure>
+      <div class="about-grid">
+        <p>Most of what I've built is in daily use by real people: an AI receptionist for a clinic, a documentation assistant for maintenance engineers, a coding curriculum for children. I learn by shipping something, then measuring what actually happened.</p>
+        <dl class="fact-card">
+          <div class="fact">
+            <dt>Experience</dt>
+            <dd>Founder, SEDA</dd>
+          </div>
+          <div class="fact">
+            <dt>Education</dt>
+            <dd>BSc Computer Science</dd>
+            <dd class="sub">University College Dublin (2023–2027)</dd>
+          </div>
+          <div class="fact">
+            <dt>Languages</dt>
+            <dd>Turkish, English (native)</dd>
+          </div>
+        </dl>
+      </div>
     </div>
   </section>
 
-  <section class="section seda" id="seda" aria-labelledby="seda-title">
-    <div class="wrap narrow">
-      <h2 id="seda-title">SEDA</h2>
-      <p>On a normal day SEDA handles around 300 agent runs for 100 to 160 people, with a median reply time of about 20 seconds and 99.2% accuracy on price answers in audits.</p>
-      <p>I designed how the agent behaves and when it must stay silent, built the FastAPI backend and its 267 automated tests, and run the pilot with the clinic. I also built the phone agent, which has been tested end to end with real calls ahead of its release.</p>
-      <p class="links"><a href="ai-receptionist.html">How it works</a><a href="https://github.com/sahintekten/seda-chat-router">Code on GitHub</a></p>
+  <section class="section alt" id="experience">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-num">02 / Experience</span>
+        <h2 class="section-title">What I've<br><em>done.</em></h2>
+      </div>
+      <div class="card-grid">
+
+        <article class="card">
+          <div class="card-head">
+            <a class="org" href="https://withseda.com">SEDA</a>
+            <span class="date">2026–present</span>
+          </div>
+          <h3 class="role">Founder</h3>
+          <p class="location">Dublin, Ireland</p>
+          <ul class="bullets">
+            <li>Answers clinic enquiries on WhatsApp, Instagram and Messenger and books consultations.</li>
+            <li>In production with a clinic in Istanbul since July 2026: ~300 agent runs a day, ~20 s median reply, 99.2% price accuracy in audits.</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <div class="card-head">
+            <span class="org">Explorium</span>
+            <span class="date">Jun–Aug 2026</span>
+          </div>
+          <h3 class="role">Science Intern</h3>
+          <p class="location">Dublin, Ireland</p>
+          <ul class="bullets">
+            <li>Built four exhibits for a new AI exhibition and a coding curriculum delivered to ~100 young learners.</li>
+          </ul>
+        </article>
+
+        <article class="card wide">
+          <div class="card-head">
+            <span class="org">Coca-Cola İçecek</span>
+            <span class="date">Dec 2025–Jan 2026</span>
+          </div>
+          <h3 class="role">Data Science Intern</h3>
+          <p class="location">Istanbul, Turkey</p>
+          <ul class="bullets">
+            <li>Built a RAG assistant over ~1,000 pages of technical documentation, with source citations and safety guardrails.</li>
+            <li>Used by 20+ engineers, ~95% answer accuracy in internal testing.</li>
+          </ul>
+        </article>
+
+        <article class="card wide">
+          <div class="card-head">
+            <span class="org">UCD Turkish Society</span>
+            <span class="date">2025–present</span>
+          </div>
+          <h3 class="role">Founder &amp; President</h3>
+          <p class="location">Dublin, Ireland</p>
+          <ul class="bullets">
+            <li>Founded the first Turkish student society at UCD.</li>
+            <li>100+ members, 20+ events a year.</li>
+          </ul>
+          <figure class="card-photo">
+            <img src="assets/embassy.jpg" alt="UCD Turkish Society with the Turkish Embassy in Ireland">
+            <figcaption>UCD Turkish Society with the Turkish Embassy in Ireland, 2026</figcaption>
+          </figure>
+        </article>
+
+      </div>
     </div>
   </section>
 
-  <section class="section" id="work" aria-labelledby="work-title">
-    <div class="wrap narrow">
-      <h2 id="work-title">Other work</h2>
-      <ul class="work">
-        <li>
-          <h3>RAG maintenance copilot</h3>
-          <p class="meta">Coca-Cola, Dec 2025 to Jan 2026</p>
-          <p>As a data science intern I built an assistant that answers engineers' questions from around 1,000 pages of technical documentation, with source citations and safety guardrails. More than 20 engineers used it; about 95% answer accuracy in internal testing.</p>
+  <section class="section" id="projects">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-num">03 / Projects</span>
+        <h2 class="section-title">Things I've<br><em>made.</em></h2>
+      </div>
+      <ul class="projects">
+        <li class="project">
+          <span class="project-num">01</span>
+          <h3>SEDA chat router</h3>
+          <p>The open-source chat-routing core of SEDA, including when the agent stays silent. FastAPI, 267 automated tests.</p>
+          <a class="project-link" href="https://github.com/sahintekten/seda-chat-router">github.com/sahintekten/seda-chat-router</a>
         </li>
-        <li>
+        <li class="project">
+          <span class="project-num">02</span>
+          <h3>RAG maintenance copilot</h3>
+          <p>Multi-turn troubleshooting assistant for maintenance engineers, with citations and guardrails.</p>
+        </li>
+        <li class="project">
+          <span class="project-num">03</span>
           <h3>Final year project</h3>
-          <p class="meta">UCD, in progress</p>
-          <p>A conversational AI research prototype that coaches people through cognitive restructuring exercises, with a dedicated safety layer, evaluated in a user study.</p>
+          <p>Research prototype that coaches people through cognitive restructuring exercises using Socratic questioning, with a dedicated safety layer. To be evaluated in a user study.</p>
         </li>
       </ul>
     </div>
   </section>
 
-  <section class="section" id="about" aria-labelledby="about-title">
-    <div class="wrap about-grid">
-      <div>
-        <h2 id="about-title">About</h2>
-        <p>I'm Sahin, a final-year Computer Science student at University College Dublin, originally from Turkey. I spent the past year building SEDA for clinics in Turkey's health tourism sector, and it taught me that the hard part of an AI product is the behaviour around the model, not the model.</p>
-        <p>I'm looking for a graduate role in software engineering, AI or data in Ireland from 2027, somewhere I can keep shipping things people rely on.</p>
-        <p>Up next: moving SEDA's phone agent onto the same backend, and finishing my final year project.</p>
+  <section class="section alt" id="education">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-num">04 / Education</span>
+        <h2 class="section-title">Where I<br><em>study.</em></h2>
       </div>
-      <div>
-        <h3 class="visually-hidden">Timeline</h3>
-        <ol class="timeline">
-          <li><span class="when">2026 to present</span><span class="role">Co-founder, SEDA</span></li>
-          <li><span class="when">Jun to Aug 2026</span><span class="role">Science Intern, Explorium</span>: four exhibits for a new AI exhibition and a coding curriculum for around 100 young learners</li>
-          <li><span class="when">Dec 2025 to Jan 2026</span><span class="role">Data Science Intern, Coca-Cola</span></li>
-          <li><span class="when">2025 to present</span><span class="role">Founder and President, UCD Turkish Society</span>: over 100 members, more than 20 events a year</li>
-          <li><span class="when">Jun to Aug 2025</span><span class="role">Web Developer Intern, Dr. Güneş Tekten Clinic, Istanbul</span></li>
-          <li><span class="when">2023 to 2027</span><span class="role">BSc Computer Science, University College Dublin</span></li>
-        </ol>
+      <div class="card-grid">
+        <article class="card">
+          <div class="card-head">
+            <span class="org">University College Dublin</span>
+            <span class="date">2023–2027</span>
+          </div>
+          <h3 class="role">BSc Computer Science</h3>
+        </article>
       </div>
     </div>
   </section>
 
-  <section class="section contact" id="contact" aria-labelledby="contact-title">
+  <section class="section" id="skills">
     <div class="wrap">
-      <h2 id="contact-title">Get in touch</h2>
-      <div class="actions">
-        <a class="btn btn-primary" href="mailto:sahin.tekten@ucdconnect.ie">sahin.tekten@ucdconnect.ie</a>
+      <div class="section-head">
+        <span class="section-num">05 / Skills</span>
+        <h2 class="section-title">What I<br><em>use.</em></h2>
       </div>
-      <p class="links"><a href="https://www.linkedin.com/in/sahintekten">LinkedIn</a><a href="https://github.com/sahintekten">GitHub</a></p>
+      <div class="skills">
+        <div class="skill-row">
+          <span class="skill-label">Languages</span>
+          <ul class="tags"><li>Python</li><li>Java</li><li>JavaScript</li><li>SQL</li><li>C/C++</li></ul>
+        </div>
+        <div class="skill-row">
+          <span class="skill-label">Tools</span>
+          <ul class="tags"><li>FastAPI</li><li>Vue 3</li><li>Docker</li><li>Git</li><li>GCP</li><li>Firebase</li></ul>
+        </div>
+        <div class="skill-row">
+          <span class="skill-label">AI</span>
+          <ul class="tags"><li>LLM agents</li><li>RAG</li><li>voice agents</li><li>safety guardrails</li></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt" id="contact">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-num">06 / Contact</span>
+        <h2 class="section-title">Say<br><em>hello.</em></h2>
+      </div>
+      <p class="contact-blurb">Open to graduate roles in Ireland for 2027. Happy to chat.</p>
+      <a class="contact-email" href="mailto:sahin.tekten@ucdconnect.ie">sahin.tekten@ucdconnect.ie</a>
+      <div class="contact-links">
+        <a href="https://github.com/sahintekten">GitHub</a>
+        <a href="https://linkedin.com/in/sahintekten">LinkedIn</a>
+      </div>
     </div>
   </section>
 
 </main>
 
-<footer class="site-footer">
-  <div class="wrap">
-    <p>Sahin Tekten</p>
-    <p><a href="https://github.com/sahintekten/seda-chat-router">Code on GitHub</a></p>
-  </div>
+<footer class="footer">
+  <div class="wrap">© 2026 Sahin Tekten</div>
 </footer>
+
 </body>
 </html>
